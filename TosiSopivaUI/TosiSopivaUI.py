@@ -5,6 +5,20 @@ import json
 from tkinter import messagebox
 from tkinter import filedialog
 
+from ctypes import Structure, c_char_p, POINTER
+
+class SQLErrorDetails(Structure):
+    _fields_ = [("sqlstate", c_char_p * 6),
+                ("native_error", ctypes.c_int),
+                ("message", c_char_p * 512),#SQL_MAX_MESSAGE_LENGTH),
+                ("message_len", ctypes.c_short)]
+
+class node_t(Structure):
+    pass
+
+node_t._fields_ = [("val", SQLErrorDetails),
+                   ("next", POINTER(node_t))]
+
 
 # Load the shared library
 if ctypes.sizeof(ctypes.c_void_p) == 4:
@@ -20,15 +34,25 @@ add_lib.dbOpen.restype = ctypes.c_int
 result = add_lib.dbOpen(b"connectionstring.txt")
 print("Result:", result)
 
+add_lib.createTables()
+
 if result == 1:
+    add_lib.addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.POINTER(node_t))]                              
+    add_lib.addCustomer.restype = None    
+   
+    customer_id = ctypes.c_int()
+    # add_lib.addCustomer("Esko".encode('utf-8'), "Viitala".encode('utf-8'), "Hietaharjunkatu 77".encode('utf-8'), "60200".encode('utf-8'), "SEINAJOKI".encode('utf-8'), ctypes.byref(customer_id))
+    
     add_lib.dbOpen.argtypes = [ctypes.c_char_p]
-    working_dir_ptr = ctypes.c_char_p()
+    json_data_ptr = ctypes.c_char_p()
+    error_list_ptr = ctypes.POINTER(node_t)()    
 
-    add_lib.queryInvoicesByCustomer(73, ctypes.byref(working_dir_ptr))
+    add_lib.queryInvoicesByCustomer(73, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
 
-    json_dict = json.loads(working_dir_ptr.value.decode('utf-8'))
+    json_dict = json.loads(json_data_ptr.value.decode('utf-8'))
 
     code = add_lib.free_json_data()
+    add_lib.free_sql_error_details()   
 
 add_lib.dbClose()
 

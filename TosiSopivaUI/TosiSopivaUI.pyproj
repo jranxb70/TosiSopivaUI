@@ -11,6 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>TosiSopivaUI</Name>
     <RootNamespace>TosiSopivaUI</RootNamespace>
+    <IsWindowsApplication>True</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
