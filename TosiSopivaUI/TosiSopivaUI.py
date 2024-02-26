@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import ttk, messagebox
+
 import ctypes
 import json
 
@@ -20,22 +22,8 @@ node_t._fields_ = [("val", SQLErrorDetails),
                    ("next", POINTER(node_t))]
 
 
-# Load the shared library
-if ctypes.sizeof(ctypes.c_void_p) == 4:
-    add_lib = ctypes.CDLL('./engine.so')  # Linux
-else:
-    add_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
 
-# Define the argument and return types of the function
-add_lib.dbOpen.argtypes = [ctypes.c_char_p]
-add_lib.dbOpen.restype = ctypes.c_int
-
-# Call the C function 
-result = add_lib.dbOpen(b"connectionstring.txt")
-print("Result:", result)
-
-add_lib.createTables()
-
+result = 0
 if result == 1:
     add_lib.addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.POINTER(node_t))]                              
     add_lib.addCustomer.restype = None    
@@ -43,119 +31,181 @@ if result == 1:
     customer_id = ctypes.c_int()
     # add_lib.addCustomer("Esko".encode('utf-8'), "Viitala".encode('utf-8'), "Hietaharjunkatu 77".encode('utf-8'), "60200".encode('utf-8'), "SEINAJOKI".encode('utf-8'), ctypes.byref(customer_id))
     
-    add_lib.dbOpen.argtypes = [ctypes.c_char_p]
+    #add_lib.dbOpen.argtypes = [ctypes.c_char_p]
     json_data_ptr = ctypes.c_char_p()
     error_list_ptr = ctypes.POINTER(node_t)()    
 
-    add_lib.queryInvoicesByCustomer(73, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+    add_lib.queryInvoicesByCustomer(1, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+
+    print("Natiivi intiaani error: {}".format(error_list_ptr.contents.val.native_error))
+    print(error_list_ptr.contents.val.message)
+
+    b = error_list_ptr.contents.val.message     
 
     json_dict = json.loads(json_data_ptr.value.decode('utf-8'))
 
     code = add_lib.free_json_data()
     add_lib.free_sql_error_details()   
 
-add_lib.dbClose()
 
 text_editor = None  # Global variable to hold the text editor widget
 
-def open_file():
-    global text_editor
-    file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-    if file_path:
-        new_window = tk.Toplevel(root)
+class DocumentX(tk.Frame):
+    def __init__(self, master=None, application=None, **kwargs):
+        super().__init__(master, **kwargs)
 
-        #ind = file_path.rfind("/")
-        split = file_path.split("/")
-        length = len(split)
-        fileName = split.pop(length - 1)                  
-        # partsandaccessories = file_path.partition("/")
-        # for element in partsandaccessories:
-        #     if element.count("/") > 0 and len(element) > 1:      
-        #         partsandaccessories = element.partition("/")                 
-            #partsandaccessories.    
-        new_window.title(fileName)
-        new_window.geometry("400x300+{}+{}".format(root.winfo_rootx() + 50, root.winfo_rooty() + 50))        
-        #new_window.geometry("400x300")  
-        new_window.transient(root)       
-        text_editor = tk.Text(new_window)
-        text_editor.pack(fill=tk.BOTH, expand=True)        
-                      
-        if text_editor:
-            with open(file_path, 'r', encoding="UTF-8") as file:
-                content = file.read()
-            text_editor.delete(1.0, tk.END)
-            text_editor.insert(tk.END, content)
+        self.app = application
+             
+        fields = {}
+
+        fields['firstname_label'] = ttk.Label(text='First name:')
+        fields['firstname'] = ttk.Entry()
+
+        fields['lastname_label'] = ttk.Label(text='Last name:')
+        fields['lastname'] = ttk.Entry(show="*")
+
+        fields['address_label'] = ttk.Label(text='Address:')
+        fields['address'] = ttk.Entry()
+
+        fields['zip_label'] = ttk.Label(text='Zip:')
+        fields['zip'] = ttk.Entry(show="*")      
+
+        fields['city_label'] = ttk.Label(text='City:')
+        fields['city'] = ttk.Entry(show="*")            
+
+        self.entries = {}
+        
+        for field in fields.values():
+            if (isinstance(field, ttk.Label)):     
+                field.pack(anchor=tk.W, padx=20, pady=0, fill=tk.X)            
+            if (isinstance(field, ttk.Entry)):     
+                field.pack(anchor=tk.W, padx=20, pady=5, fill=tk.X)
+
+        ttk.Button(text='Save', command=self.save).pack(anchor=tk.W, padx=20, pady=5)
+
+        self.entries['firstname'] =  fields['firstname']
+        self.entries['lastname'] =   fields['lastname']
+        self.entries['address'] =  fields['address']
+        self.entries['zip'] =   fields['zip']               
+        self.entries['city'] =   fields['city']   
+        self.save_()               
+
+    def save(self):
+        data = {field: entry.get() for field, entry in self.entries.items()}
+        messagebox.showinfo("Saved", f"Saved data: {data}")    
+
+    def save_(self):
+        self.app.add_lib.addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.POINTER(node_t))]                              
+        self.app.add_lib.addCustomer.restype = None    
+   
+        customer_id = ctypes.c_int()
+        # add_lib.addCustomer("Esko".encode('utf-8'), "Viitala".encode('utf-8'), "Hietaharjunkatu 77".encode('utf-8'), "60200".encode('utf-8'), "SEINAJOKI".encode('utf-8'), ctypes.byref(customer_id))
+    
+ 
+        json_data_ptr = ctypes.c_char_p()
+        error_list_ptr = ctypes.POINTER(node_t)()    
+
+        self.app.add_lib.queryInvoicesByCustomer(1, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+
+        print("Natiivi intiaani error: {}".format(error_list_ptr))
+
+        #print("Natiivi intiaani error: {}".format(error_list_ptr.contents.val))
+
+        #print("Natiivi intiaani error: {}".format(error_list_ptr.contents.val.native_error))
+        #print(error_list_ptr.contents.val.message)
+
+        #b = error_list_ptr.contents.val.message     
+
+        json_dict = json.loads(json_data_ptr.value.decode('utf-8'))
+
+        code = self.app.add_lib.free_json_data()
+        self.app.add_lib.free_sql_error_details()                     
+
+class ApplicationX(tk.Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.title('Invoice')
+        self.geometry("350x220")
+
+        # Create a notebook (tabbed interface)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(fill="both", expand=True)
+
+        # Load the shared library
+        if ctypes.sizeof(ctypes.c_void_p) == 4:
+            self.add_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
-            messagebox.showerror("Error", "No document is currently open.")
+            self.add_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
 
-def save_file():
-    global text_editor
-    if text_editor:
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-        if file_path:
-            with open(file_path, 'w') as file:
-                content = text_editor.get(1.0, tk.END)
-                file.write(content)
-            messagebox.showinfo("Save", "File saved successfully.")
-    else:
-        messagebox.showerror("Error", "No document is currently open.")
+        # Add some documents
+        for i in range(1):
+            doc = DocumentX(self.notebook, application=self)
+            self.notebook.add(doc, text=f"Document {i+1}")    
 
-def create_new_document():
-    global text_editor
-    new_window = tk.Toplevel(root)
-    new_window.title("New Document")
-    new_window.geometry("400x300")
-    text_editor = tk.Text(new_window)
-    text_editor.pack(fill=tk.BOTH, expand=True)
+    def getEngine(self):
+        return self.add_lib        
 
-def copy_text():
-    global text_editor
-    if text_editor:
-        text_editor.event_generate("<<Copy>>")
 
-def cut_text():
-    global text_editor
-    if text_editor:
-        text_editor.event_generate("<<Cut>>")
 
-def paste_text():
-    global text_editor
-    if text_editor:
-        text_editor.event_generate("<<Paste>>")
+class Document(tk.Frame):
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
+        #self.grid(sticky="nsew")
+        self.master.grid_rowconfigure(0, weight=1)
+        self.master.grid_columnconfigure(0, weight=1)
+        self.grid(row=0, column=0, sticky="nsew")        
 
-def show_help():
-    messagebox.showinfo("Help", "Help information...")
+        style = ttk.Style(self)
+        style.configure("Bordered.TButton", borderwidth=2, relief="solid")
 
-# Create main window
-root = tk.Tk()
-root.title("Menu Example")
+        # Create text fields for invoicing data
+        fields = ["Name", "Address", "City", "Date", "Invoice Number", "Price", "Quantities"]
+        self.entries = {}
+        for field in fields:
+            self.create_field(field)
 
-# Create menu bar
-menu_bar = tk.Menu(root)
+        # Create a save button
+        #self.
+        #save_button = ttk.Button(self, text="Save", style="Bordered.TButton", command=self.save)
+        #save_button.pack(pady=10, side="left")  # Add padding on the x-axis
+       # self.save_button.config(relief="solid", borderwidth=1)  # Add outline
 
-# Create File menu
-file_menu = tk.Menu(menu_bar, tearoff=0)
-file_menu.add_command(label="New", command=create_new_document)
-file_menu.add_command(label="Open", command=open_file)
-file_menu.add_command(label="Save", command=save_file)
-file_menu.add_separator()
-file_menu.add_command(label="Exit", command=root.quit)
-menu_bar.add_cascade(label="File", menu=file_menu)
+        # Create a save button
+        save_button = ttk.Button(self, text="Save", style="Bordered.TButton", command=self.save)
+        #save_button.grid(row=8, column=0, pady=10, sticky="w")  # Place the button in the 8th row and 0th column, with some padding on the y-axis and stick to the west (left) side
+     
 
-# Create Edit menu
-edit_menu = tk.Menu(menu_bar, tearoff=0)
-edit_menu.add_command(label="Copy", command=copy_text)
-edit_menu.add_command(label="Cut", command=cut_text)
-edit_menu.add_command(label="Paste", command=paste_text)
-menu_bar.add_cascade(label="Edit", menu=edit_menu)
+    def create_field(self, field_name):
+        frame = ttk.Frame(self)
+        #frame.pack(pady=5)  # Add some vertical space between the fields
+        label = ttk.Label(frame, text=field_name+":", width=15, anchor='e')
+        #label.pack(side="left")
+        label.config(relief="solid", borderwidth=1)  # Add outline
+        entry = ttk.Entry(frame)
+        #entry.pack(side="left", fill='x', expand=True)
 
-# Create Help menu
-help_menu = tk.Menu(menu_bar, tearoff=0)
-help_menu.add_command(label="About", command=show_help)
-menu_bar.add_cascade(label="Help", menu=help_menu)
+        self.entries[field_name] = entry
 
-# Attach menu bar to root window
-root.config(menu=menu_bar)
+    def save(self):
+        data = {field: entry.get() for field, entry in self.entries.items()}
+        messagebox.showinfo("Saved", f"Saved data: {data}")
 
-# Run the main event loop
-root.mainloop()
+class Application(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Invoicing Application")
+        self.geometry("800x600")
+
+        # Create a notebook (tabbed interface)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(fill="both", expand=True)
+
+        # Add some documents
+        for i in range(2):
+            doc = Document(self.notebook)
+            self.notebook.add(doc, text=f"Document {i+1}")
+
+if __name__ == "__main__":
+    app = ApplicationX()
+    app.mainloop()
