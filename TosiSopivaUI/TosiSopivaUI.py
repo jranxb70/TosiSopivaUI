@@ -1,12 +1,8 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 
 import ctypes
 import json
-
-from tkinter import messagebox
-from tkinter import filedialog
-
 import chardet
 
 from ctypes import Structure, c_char_p, POINTER
