@@ -7,6 +7,8 @@ import json
 from tkinter import messagebox
 from tkinter import filedialog
 
+import chardet
+
 from ctypes import Structure, c_char_p, POINTER
 
 class SQLErrorDetails(Structure):
@@ -98,9 +100,7 @@ class DocumentX(tk.Frame):
         self.app.add_lib.addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.POINTER(node_t))]                              
         self.app.add_lib.addCustomer.restype = None    
    
-        customer_id = ctypes.c_int()
-        # add_lib.addCustomer("Esko".encode('utf-8'), "Viitala".encode('utf-8'), "Hietaharjunkatu 77".encode('utf-8'), "60200".encode('utf-8'), "SEINAJOKI".encode('utf-8'), ctypes.byref(customer_id))
-    
+        customer_id = ctypes.c_int()  
  
         json_data_ptr = ctypes.c_char_p()
         error_list_ptr = ctypes.POINTER(node_t)()    
@@ -109,14 +109,62 @@ class DocumentX(tk.Frame):
 
         print("Natiivi intiaani error: {}".format(error_list_ptr))
 
-        #print("Natiivi intiaani error: {}".format(error_list_ptr.contents.val))
 
-        #print("Natiivi intiaani error: {}".format(error_list_ptr.contents.val.native_error))
-        #print(error_list_ptr.contents.val.message)
+        # Define the C function signature
+        addNewInvoiceData = self.app.add_lib.addNewInvoiceData
+        addNewInvoiceData.argtypes = [ctypes.c_char_p, ctypes.c_int]
+        addNewInvoiceData.restype = None
 
-        #b = error_list_ptr.contents.val.message     
+        # Create a sample JSON object
 
-        json_dict = json.loads(json_data_ptr.value.decode('utf-8'))
+        sample_json = {
+            "customer_id": 1, 
+            "invoice_date": "2017-01-10 17:00:05.00000", 
+            "invoice_subtotal": 33.760000, 
+            "invoice_total": 42.200000, 
+            "invoice_tax": 8.440000, 
+            "bank_reference" : "10731", 
+            "invoice_lines" : 
+            [
+                {
+                    "product_name": "kalja", 
+                    "quantity": 6, 
+                    "price": 1.05
+                }, 
+                {
+                    "product_name": "siideri", 
+                    "quantity": 8, 
+                    "price": 3.40
+                }, 
+                {
+                    "product_name": "lonkero",
+                    "quantity": 12, 
+                    "price": 2.25
+                }
+            ]
+        }
+
+        # Convert the JSON object to a string
+        json_str = json.dumps(sample_json)
+
+        enc = json_str.encode()
+        l = len(json_str)        
+
+        # Call the C function with the JSON data
+        addNewInvoiceData(enc, l)           
+
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        print(f"Detected encoding: {detected_encoding}")        
+        try:
+            theBlockOfFlats = json_data_ptr.value.decode(detected_encoding) # 'ISO-8859-1' or 'utf-8'           
+            json_dict = json.loads(theBlockOfFlats)
+        except json.JSONDecodeError:            
+            pass
+        except UnicodeDecodeError:
+            pass                             
+        except Exception:
+            pass                
 
         code = self.app.add_lib.free_json_data()
         self.app.add_lib.free_sql_error_details()                     
