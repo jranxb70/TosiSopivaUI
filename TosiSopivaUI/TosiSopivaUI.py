@@ -20,32 +20,6 @@ node_t._fields_ = [("val", SQLErrorDetails),
                    ("next", POINTER(node_t))]
 
 
-
-result = 0
-if result == 1:
-    add_lib.addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.POINTER(node_t))]                              
-    add_lib.addCustomer.restype = None    
-   
-    customer_id = ctypes.c_int()
-    # add_lib.addCustomer("Esko".encode('utf-8'), "Viitala".encode('utf-8'), "Hietaharjunkatu 77".encode('utf-8'), "60200".encode('utf-8'), "SEINAJOKI".encode('utf-8'), ctypes.byref(customer_id))
-    
-    #add_lib.dbOpen.argtypes = [ctypes.c_char_p]
-    json_data_ptr = ctypes.c_char_p()
-    error_list_ptr = ctypes.POINTER(node_t)()    
-
-    add_lib.queryInvoicesByCustomer(1, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
-
-    print("Natiivi intiaani error: {}".format(error_list_ptr.contents.val.native_error))
-    print(error_list_ptr.contents.val.message)
-
-    b = error_list_ptr.contents.val.message     
-
-    json_dict = json.loads(json_data_ptr.value.decode('utf-8'))
-
-    code = add_lib.free_json_data()
-    add_lib.free_sql_error_details()   
-
-
 text_editor = None  # Global variable to hold the text editor widget
 
 class DocumentX(tk.Frame):
