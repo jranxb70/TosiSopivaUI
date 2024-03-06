@@ -52,6 +52,7 @@ class DBEngineWrapper():
         release.argtypes = [ctypes.c_int]
         release.restype = ctypes.c_int
         tuppu = release(2)                        
+                               
         return customer_data
 
     def queryInvoicesByCustomer(self):
@@ -83,7 +84,9 @@ class DBEngineWrapper():
          
         free_json_data.argtypes = [ctypes.c_int]
         free_json_data = ctypes.c_int
+        
         code = free_json_data(1)
+        
         free_sql_error_details()   
 
     def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city):
