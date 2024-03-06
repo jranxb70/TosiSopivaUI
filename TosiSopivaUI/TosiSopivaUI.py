@@ -253,65 +253,6 @@ class ApplicationX(tk.Tk):
         return self.add_lib        
 
 
-
-class Document(tk.Frame):
-    def __init__(self, master=None, **kwargs):
-        super().__init__(master, **kwargs)
-        #self.grid(sticky="nsew")
-        self.master.grid_rowconfigure(0, weight=1)
-        self.master.grid_columnconfigure(0, weight=1)
-        self.grid(row=0, column=0, sticky="nsew")        
-
-        style = ttk.Style(self)
-        style.configure("Bordered.TButton", borderwidth=2, relief="solid")
-
-        # Create text fields for invoicing data
-        fields = ["Name", "Address", "City", "Date", "Invoice Number", "Price", "Quantities"]
-        self.entries = {}
-        for field in fields:
-            self.create_field(field)
-
-        # Create a save button
-        #self.
-        #save_button = ttk.Button(self, text="Save", style="Bordered.TButton", command=self.save)
-        #save_button.pack(pady=10, side="left")  # Add padding on the x-axis
-       # self.save_button.config(relief="solid", borderwidth=1)  # Add outline
-
-        # Create a save button
-        save_button = ttk.Button(self, text="Save", style="Bordered.TButton", command=self.save)
-        #save_button.grid(row=8, column=0, pady=10, sticky="w")  # Place the button in the 8th row and 0th column, with some padding on the y-axis and stick to the west (left) side
-     
-
-    def create_field(self, field_name):
-        frame = ttk.Frame(self)
-        #frame.pack(pady=5)  # Add some vertical space between the fields
-        label = ttk.Label(frame, text=field_name+":", width=15, anchor='e')
-        #label.pack(side="left")
-        label.config(relief="solid", borderwidth=1)  # Add outline
-        entry = ttk.Entry(frame)
-        #entry.pack(side="left", fill='x', expand=True)
-
-        self.entries[field_name] = entry
-
-    def save(self):
-        data = {field: entry.get() for field, entry in self.entries.items()}
-        messagebox.showinfo("Saved", f"Saved data: {data}")
-
-class Application(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Invoicing Application")
-        self.geometry("800x600")
-
-        # Create a notebook (tabbed interface)
-        self.notebook = ttk.Notebook(self)
-        self.notebook.pack(fill="both", expand=True)
-
-        # Add some documents
-        for i in range(2):
-            doc = Document(self.notebook)
-            self.notebook.add(doc, text=f"Document {i+1}")
-
 if __name__ == "__main__":
     app = ApplicationX()
     app.mainloop()
