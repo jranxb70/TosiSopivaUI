@@ -256,3 +256,6 @@ class ApplicationX(tk.Tk):
 if __name__ == "__main__":
     app = ApplicationX()
     app.mainloop()
+
+
+    # muutos
