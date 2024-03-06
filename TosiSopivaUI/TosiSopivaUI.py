@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
-from time import gmtime, strftime
+
 from DBEngineWrapper import DBEngineWrapper
 
 import datetime
@@ -9,7 +9,7 @@ import datetime
 text_editor = None  # Global variable to hold the text editor widget
                   
 
-class DocumentX(tk.Frame):
+class Document(tk.Frame):
     def __init__(self, master=None, application=None, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -55,7 +55,7 @@ class DocumentX(tk.Frame):
 
                         
 
-class ApplicationX(tk.Tk):
+class Application(tk.Tk):
     def __init__(self):
         super().__init__()
 
@@ -102,10 +102,10 @@ class ApplicationX(tk.Tk):
 
         # Add some documents
         for i in range(1):
-            doc = DocumentX(self.notebook, application=self)
+            doc = Document(self.notebook, application=self)
             self.notebook.add(doc, text=f"Document {i+1}")  
 
 
 if __name__ == "__main__":
-    app = ApplicationX()
+    app = Application()
     app.mainloop()
