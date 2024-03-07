@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
 from DBEngineWrapper import DBEngineWrapper
+from BankReferenceCalc import BankReferenceCalc
 
 import datetime
 
@@ -69,22 +70,27 @@ class Application(tk.Tk):
         now = datetime.datetime.now()
 
         # Format the timestamp including milliseconds
-        formatted_timestamp = now.strftime("%Y-%m-%d %H:%M:%S.%f")               
+        formatted_timestamp = now.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-        required_keys = ["customer_id", "invoice_date", "invoice_subtotal", "invoice_total", "invoice_tax", "bank_reference", "invoice_lines"]
-        customer_id = 3
-        invoice_tax_percent = 0.25 + 1      
-        invoice_subtotal = 10.50
-        invoice_total = invoice_subtotal * invoice_tax_percent
-        invoice_tax = invoice_total - invoice_subtotal
-        bank_reference = "10558"
-        invoice_lines = []
         product_name = "product_name"
         quantity = "quantity"
         price = "price"
         productname = "Ale"
         product_quantity = 10
-        product_price = 2.50
+        product_price = 2.50                    
+
+        customer_id = 3
+        invoice_tax_percent = 0.25 + 1      
+        invoice_subtotal = product_quantity * product_price
+        invoice_total = invoice_subtotal * invoice_tax_percent
+        invoice_tax = invoice_total - invoice_subtotal
+        
+        bankreference = 1000
+        bankreference = bankreference + customer_id   
+        
+        bank_reference = f"{BankReferenceCalc.calc_new_reference(bankreference)}"
+        invoice_lines = []
+
         invoice_lines.append({f"{product_name}": productname, f"{quantity}": product_quantity, f"{price}": product_price})
 
         engine.addNewInvoice(customer_id=customer_id, invoice_date=formatted_timestamp, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_lines=invoice_lines)
