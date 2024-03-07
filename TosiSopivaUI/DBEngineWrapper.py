@@ -46,14 +46,14 @@ class DBEngineWrapper():
                                
         return customer_data
 
-    def queryInvoicesByCustomer(self):
+    def queryInvoicesByCustomer(self, customer_id):
 
         queryInvoicesByCustomer = self.add_lib.queryInvoicesByCustomer
         queryInvoicesByCustomer.argtypes = []        
         json_data_ptr = ctypes.c_char_p()
         error_list_ptr = ctypes.POINTER(node_t)()        
         
-        queryInvoicesByCustomer(1, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+        queryInvoicesByCustomer(customer_id, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
 
         #print("Natiivi intiaani error: {}".format(error_list_ptr))            
 

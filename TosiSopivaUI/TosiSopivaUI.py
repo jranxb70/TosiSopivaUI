@@ -64,7 +64,7 @@ class Application(tk.Tk):
         engine = self.engine        
         customer_data = engine.getCustomer(1)
 
-        engine.queryInvoicesByCustomer()
+        engine.queryInvoicesByCustomer(1)
 
         # Get the current date and time
         now = datetime.datetime.now()
