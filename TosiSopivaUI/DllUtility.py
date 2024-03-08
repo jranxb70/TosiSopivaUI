@@ -57,8 +57,8 @@ class DllUtility():
 				print(f"Connection string: {self.connection_string}")
 			except UnicodeDecodeError:
 				print("Error decoding connection string (invalid UTF-8 sequence)")
-			else:
-				print("Error calling getConnectionString")	
+			#else:
+			#	print("Error calling getConnectionString")	
 		
 		freeGlobalVariable = DBEngineWrapper.get_dll().freeGlobalVariable
 		freeGlobalVariable.argtypes	= [c_int]
