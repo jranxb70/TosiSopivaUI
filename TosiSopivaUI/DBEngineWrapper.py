@@ -19,17 +19,22 @@ node_t._fields_ = [("val", SQLErrorDetails),
 
 
 class DBEngineWrapper():
+    _class_lib =None    
     def __init__(self):
         # Load the shared library
         if ctypes.sizeof(ctypes.c_void_p) == 4:
-            self.add_lib = ctypes.CDLL('./engine.so')  # Linux
+            DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
-            self.add_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows 
+            DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+
+    @staticmethod
+    def get_dll():
+        return DBEngineWrapper._class_lib        
 
     def getCustomer(self, customer_id):
         
-        getCustomerCharOut = self.add_lib.getCustomerCharOut
-        release = self.add_lib.free_json_data      
+        getCustomerCharOut = DBEngineWrapper.get_dll().getCustomerCharOut
+        release = DBEngineWrapper.get_dll().free_json_data      
         getCustomerCharOut.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
         getCustomerCharOut.restype = ctypes.c_int
 
@@ -48,14 +53,12 @@ class DBEngineWrapper():
 
     def queryInvoicesByCustomer(self, customer_id):
 
-        queryInvoicesByCustomer = self.add_lib.queryInvoicesByCustomer
+        queryInvoicesByCustomer = DBEngineWrapper.get_dll().queryInvoicesByCustomer
         queryInvoicesByCustomer.argtypes = []        
         json_data_ptr = ctypes.c_char_p()
         error_list_ptr = ctypes.POINTER(node_t)()        
         
         queryInvoicesByCustomer(customer_id, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
-
-        #print("Natiivi intiaani error: {}".format(error_list_ptr))            
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
@@ -70,8 +73,8 @@ class DBEngineWrapper():
         except Exception:
             pass                
 
-        free_json_data = self.add_lib.free_json_data
-        free_sql_error_details = self.add_lib.free_sql_error_details
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+        free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
         free_json_data.argtypes = [ctypes.c_int]
         free_json_data = ctypes.c_int
@@ -79,10 +82,11 @@ class DBEngineWrapper():
         code = free_json_data(1)
         
         free_sql_error_details()   
+        return json_dict        
 
     def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city):
 
-        addCustomer = self.add_lib.addCustomer
+        addCustomer = DBEngineWrapper.get_dll().addCustomer
         addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
         addCustomer.restype = None
 
@@ -95,6 +99,7 @@ class DBEngineWrapper():
         customer_city = customer_city.encode("utf-8")
 
         addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_id)
+        return customer_id.value
 
     def addNewInvoice(self, **kwargs):
 
@@ -135,9 +140,16 @@ class DBEngineWrapper():
         for key, value in kwargs.items():
             new_invoice[key] = value
 
-        addNewInvoiceData = self.add_lib.addNewInvoiceData
+        addNewInvoiceData = DBEngineWrapper.get_dll().addNewInvoiceData
         addNewInvoiceData.argtypes = [ctypes.c_char_p, ctypes.c_int]
-        addNewInvoiceData.restype = None
+        addNewInvoiceData.restype = ctypes.c_int
+
+        original_string = '{"label": value }'
+
+        # Replace double quotes with escaped double quotes, and escape the backslashes
+        escaped_string = original_string.replace('"', '\\"').replace('\\', '\\\\')
+
+        print(escaped_string)        
         
         # Convert the JSON object to a string      
         json_str = json.dumps(new_invoice)
@@ -145,4 +157,5 @@ class DBEngineWrapper():
         l = len(json_str)        
 
         # Call the C function with the JSON data
-        addNewInvoiceData(enc, l)
+        value = addNewInvoiceData(enc, l)
+        return value        

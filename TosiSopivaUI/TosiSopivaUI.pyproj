@@ -24,6 +24,7 @@
   <ItemGroup>
     <Compile Include="BankReferenceCalc.py" />
     <Compile Include="DBEngineWrapper.py" />
+    <Compile Include="DllUtility.py" />
     <Compile Include="TosiSopivaUI.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

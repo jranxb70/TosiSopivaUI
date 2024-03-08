@@ -3,8 +3,9 @@ from tkinter import ttk, messagebox, filedialog
 
 from DBEngineWrapper import DBEngineWrapper
 from BankReferenceCalc import BankReferenceCalc
+from DllUtility import DllUtility
 
-import datetime
+from datetime import datetime
 
 
 text_editor = None  # Global variable to hold the text editor widget
@@ -57,20 +58,69 @@ class Document(tk.Frame):
                         
 
 class Application(tk.Tk):
+    
     def __init__(self):
         super().__init__()
 
         self.engine = DBEngineWrapper()
+
+        diagnose = DllUtility()
+        
+        db = diagnose.get_database_name()
+        user = diagnose.get_user_name()
+        server = diagnose.get_server_name()
+        
+        customer_id = self.add_customer("Pasi", "Männistö", "Pajuluomantie 4", "60100", "Seinäjoki")
+
+        customer_data = self.query_customer(customer_id)
+
+        insult = self.add_new_invoice(customer_id)
+
+        json_data = self.query_invoices_by_customer(customer_id)
+        print(json_data);        
+
+        self.title('Invoice')
+        self.geometry("350x220")
+
+        # Create a notebook (tabbed interface)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(fill="both", expand=True)
+
+        # Add some documents
+        for i in range(1):
+            doc = Document(self.notebook, application=self)
+            self.notebook.add(doc, text=f"Document {i+1}")
+               
+    def query_customer(self, customer_id):
         engine = self.engine        
-        customer_data = engine.getCustomer(1)
+        customer_data = engine.getCustomer(customer_id)
+        return customer_data        
 
-        engine.queryInvoicesByCustomer(1)
+    def query_invoices_by_customer(self, customer_id):
+        engine = self.engine            
+        return engine.queryInvoicesByCustomer(customer_id)
 
+    def modify_timestamp2(self, original_timestamp):
+        # Parse the original timestamp
+        dt = datetime.strptime(original_timestamp, "%Y-%m-%d %H:%M:%S.%f")
+        mic = dt.microsecond
+        dt = dt.replace(microsecond=0)
+             
+        # Format the timestamp with 7 digits of fractional seconds
+        modified_timestamp = dt.strftime("%Y-%m-%d %H:%M:%S.%f")    
+
+        return modified_timestamp      
+
+    def add_new_invoice(self, customer_id):
+        engine = self.engine                      
         # Get the current date and time
-        now = datetime.datetime.now()
+
+        now = datetime.now()
 
         # Format the timestamp including milliseconds
-        formatted_timestamp = now.strftime("%Y-%m-%d %H:%M:%S.%f")
+        orig = now.strftime("%Y-%m-%d %H:%M:%S.%f")
+        formatted_timestamp = self.modify_timestamp2(orig)
+        print(f"Original: {orig} Modified timestamp: {formatted_timestamp}")        
 
         product_name = "product_name"
         quantity = "quantity"
@@ -79,7 +129,6 @@ class Application(tk.Tk):
         product_quantity = 10
         product_price = 2.50                    
 
-        customer_id = 3
         invoice_tax_percent = 0.25 + 1      
         invoice_subtotal = product_quantity * product_price
         invoice_total = invoice_subtotal * invoice_tax_percent
@@ -93,23 +142,15 @@ class Application(tk.Tk):
 
         invoice_lines.append({f"{product_name}": productname, f"{quantity}": product_quantity, f"{price}": product_price})
 
-        engine.addNewInvoice(customer_id=customer_id, invoice_date=formatted_timestamp, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_lines=invoice_lines)
+        return engine.addNewInvoice(customer_id=customer_id, invoice_date=formatted_timestamp, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_lines=invoice_lines)          
 
-        address = "Tuppukoskentie 6"
+    def add_customer(self, first_name, last_name, address, zip, city):
+        engine = self.engine
 
-        engine.addCustomer("Matti", "Aalto", address, "65300","Vaasa")        
+        customer_id = engine.addCustomer(first_name, last_name, address, zip, city)    
+        return customer_id                                
 
-        self.title('Invoice')
-        self.geometry("350x220")
 
-        # Create a notebook (tabbed interface)
-        self.notebook = ttk.Notebook(self)
-        self.notebook.pack(fill="both", expand=True)
-
-        # Add some documents
-        for i in range(1):
-            doc = Document(self.notebook, application=self)
-            self.notebook.add(doc, text=f"Document {i+1}")  
 
 
 if __name__ == "__main__":
