@@ -64,8 +64,8 @@ class DBEngineWrapper():
         detected_encoding = chardet.detect(cont)['encoding']
         print(f"Detected encoding: {detected_encoding}")        
         try:
-            theBlockOfFlats = json_data_ptr.value.decode(detected_encoding) # 'ISO-8859-1' or 'utf-8'           
-            json_dict = json.loads(theBlockOfFlats)
+            # 'ISO-8859-1' or 'utf-8'           
+            json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
         except json.JSONDecodeError:            
             pass
         except UnicodeDecodeError:
@@ -83,6 +83,39 @@ class DBEngineWrapper():
         
         free_sql_error_details()   
         return json_dict        
+
+    def queryCustomers(self):
+
+        queryCustomers = DBEngineWrapper.get_dll().queryCustomers
+        queryCustomers.argtypes = []        
+        json_data_ptr = ctypes.c_char_p()
+        error_list_ptr = ctypes.POINTER(node_t)()        
+        
+        queryCustomers(ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        print(f"Detected encoding: {detected_encoding}")        
+        try:
+            # 'ISO-8859-1' or 'utf-8'           
+            json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
+        except json.JSONDecodeError:            
+            pass
+        except UnicodeDecodeError:
+            pass                             
+        except Exception:
+            pass                
+
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+        free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
+         
+        free_json_data.argtypes = [ctypes.c_int]
+        free_json_data = ctypes.c_int
+        
+        code = free_json_data(1)
+        
+        free_sql_error_details()   
+        return json_dict       
 
     def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city):
 
@@ -143,13 +176,6 @@ class DBEngineWrapper():
         addNewInvoiceData = DBEngineWrapper.get_dll().addNewInvoiceData
         addNewInvoiceData.argtypes = [ctypes.c_char_p, ctypes.c_int]
         addNewInvoiceData.restype = ctypes.c_int
-
-        original_string = '{"label": value }'
-
-        # Replace double quotes with escaped double quotes, and escape the backslashes
-        escaped_string = original_string.replace('"', '\\"').replace('\\', '\\\\')
-
-        print(escaped_string)        
         
         # Convert the JSON object to a string      
         json_str = json.dumps(new_invoice)

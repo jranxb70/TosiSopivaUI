@@ -16,6 +16,10 @@ class Document(tk.Frame):
         super().__init__(master, **kwargs)
 
         self.app = application
+
+        eng = self.app.get_engine()
+
+        c = eng.getCustomer(3)             
              
         fields = {}
 
@@ -58,6 +62,9 @@ class Document(tk.Frame):
                         
 
 class Application(tk.Tk):
+
+    def get_engine(self):
+        return self.engine            
     
     def __init__(self):
         super().__init__()
@@ -69,6 +76,8 @@ class Application(tk.Tk):
         db = diagnose.get_database_name()
         user = diagnose.get_user_name()
         server = diagnose.get_server_name()
+
+        customers = self.query_customers()  
         
         customer_id = self.add_customer("Pasi", "Männistö", "Pajuluomantie 4", "60100", "Seinäjoki")
 
@@ -94,20 +103,32 @@ class Application(tk.Tk):
     def query_customer(self, customer_id):
         engine = self.engine        
         customer_data = engine.getCustomer(customer_id)
-        return customer_data        
+        return customer_data
+
+    def query_customers(self):
+        engine = self.engine        
+        customer_data = engine.queryCustomers()
+        return customer_data         
 
     def query_invoices_by_customer(self, customer_id):
         engine = self.engine            
         return engine.queryInvoicesByCustomer(customer_id)
 
-    def modify_timestamp2(self, original_timestamp):
+    def modify_timestamp2(self, original_time):
         # Parse the original timestamp
-        dt = datetime.strptime(original_timestamp, "%Y-%m-%d %H:%M:%S.%f")
-        mic = dt.microsecond
-        dt = dt.replace(microsecond=0)
+        time_stamp =  original_time.strftime("%Y-%m-%d %H:%M:%S.%f")        
+        dt = datetime.strptime(time_stamp, "%Y-%m-%d %H:%M:%S.%f")
+        #mic = dt.microsecond
+        #dt = dt.replace(microsecond=0)
              
         # Format the timestamp with 7 digits of fractional seconds
-        modified_timestamp = dt.strftime("%Y-%m-%d %H:%M:%S.%f")    
+        modified_timestamp = dt.strftime("%Y-%m-%d %H:%M:%S.%f")
+        modified_timestamp = modified_timestamp + '000'
+
+        # NOTE: fractions are in microseconds in python
+        # Sql Server ODBC driver requires the fractions to be nanoseconds
+        # However, Sql Server won't accept the precision that is below 0,1 microseconds
+        # Therefore three zeros are concut at the end of fractions here       
 
         return modified_timestamp      
 
@@ -118,9 +139,9 @@ class Application(tk.Tk):
         now = datetime.now()
 
         # Format the timestamp including milliseconds
-        orig = now.strftime("%Y-%m-%d %H:%M:%S.%f")
-        formatted_timestamp = self.modify_timestamp2(orig)
-        print(f"Original: {orig} Modified timestamp: {formatted_timestamp}")        
+        formatted_timestamp = self.modify_timestamp2(now)
+        
+        print(f"Modified timestamp: {formatted_timestamp}")        
 
         product_name = "product_name"
         quantity = "quantity"
