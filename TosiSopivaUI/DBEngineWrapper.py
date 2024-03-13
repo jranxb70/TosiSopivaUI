@@ -185,3 +185,41 @@ class DBEngineWrapper():
         # Call the C function with the JSON data
         value = addNewInvoiceData(enc, l)
         return value        
+
+    def query_invoice_by_id(self, invoice_id):
+        queryInvoiceById = DBEngineWrapper.get_dll().queryInvoiceById
+        #queryInvoiceById.argtypes = [ ctypes.c_int ]
+        queryInvoiceById.restype = None
+
+        json_data_ptr = ctypes.c_char_p()
+        error_list_ptr = ctypes.POINTER(node_t)()
+        
+        try:
+            queryInvoiceById(invoice_id, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+        except Exception:
+            pass                        
+
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        print(f"Detected encoding: {detected_encoding}")        
+        try:
+            # 'ISO-8859-1' or 'utf-8'           
+            json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
+        except json.JSONDecodeError:            
+            pass
+        except UnicodeDecodeError:
+            pass                             
+        except Exception:
+            pass                
+
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+        free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
+         
+        free_json_data.argtypes = [ctypes.c_int]
+        free_json_data = ctypes.c_int
+        
+        code = free_json_data(1)
+        
+        free_sql_error_details()   
+        return json_dict                
+

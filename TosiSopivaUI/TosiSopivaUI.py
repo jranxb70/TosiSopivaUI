@@ -77,6 +77,8 @@ class Application(tk.Tk):
         user = diagnose.get_user_name()
         server = diagnose.get_server_name()
 
+        invoice = self.query_invoice_by_id(1)      
+
         customers = self.query_customers()  
         
         customer_id = self.add_customer("Pasi", "Männistö", "Pajuluomantie 4", "60100", "Seinäjoki")
@@ -109,6 +111,10 @@ class Application(tk.Tk):
         engine = self.engine        
         customer_data = engine.queryCustomers()
         return customer_data         
+
+    def query_invoice_by_id(self, invoice_id):
+        engine = self.engine                      
+        return engine.query_invoice_by_id(invoice_id)
 
     def query_invoices_by_customer(self, customer_id):
         engine = self.engine            
@@ -170,8 +176,6 @@ class Application(tk.Tk):
 
         customer_id = engine.addCustomer(first_name, last_name, address, zip, city)    
         return customer_id                                
-
-
 
 
 if __name__ == "__main__":
