@@ -99,6 +99,7 @@ def create_table():
 
 
 def calldb():
+	create_table()
 	c = conn.cursor()
 	c.execute("SELECT * FROM clients")
 	clients = c.fetchall()

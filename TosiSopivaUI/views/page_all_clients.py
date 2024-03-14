@@ -4,14 +4,10 @@ from flet_route import Params, Basket
 
 # IMPORT YOU CREATE TABLE 
 from db_clients import mytable, tb, calldb
-from db_create_all_tables import create_table_clients
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
 def page_all_clients(page: ft.Page, params: Params, basket: Basket):
-    
-    # AND RUN SCRIPT FOR CREATE TABLE WHEN FLET FIRST RUN
-	create_table_clients()
 
 	page.scroll = "auto"
 

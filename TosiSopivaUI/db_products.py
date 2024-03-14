@@ -87,6 +87,7 @@ def create_table():
 	conn.commit()
 
 def calldb():
+	create_table()
 	c = conn.cursor()
 	c.execute("SELECT * FROM products")
 	products = c.fetchall()
