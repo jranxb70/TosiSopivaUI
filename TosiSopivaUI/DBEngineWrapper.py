@@ -44,7 +44,9 @@ class DBEngineWrapper():
         # Call the C function
         result = getCustomerCharOut(customer_id, ctypes.byref(json_data_ptr))
         
-        customer_data = json.loads(json_data_ptr.value.decode())
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
         release.argtypes = [ctypes.c_int]
         release.restype = ctypes.c_int
         tuppu = release(2)
