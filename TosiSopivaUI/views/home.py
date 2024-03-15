@@ -3,7 +3,6 @@ from flet_route import Params, Basket
 from flet import *
 
 def Home(page: ft.Page, params: Params, basket: Basket):
-
     return ft.View(
         "/",
         

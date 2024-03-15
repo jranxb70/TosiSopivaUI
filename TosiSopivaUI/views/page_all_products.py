@@ -85,7 +85,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
        	controls=[
             Text("CLIENTS",size=30,weight="bold"),
 			ElevatedButton("add new data", on_click=showInput),
-   ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),
+   			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
 		inputcon 

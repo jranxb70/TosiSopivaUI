@@ -36,6 +36,7 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
         "/page_auth",
         
         controls = [
+            ElevatedButton(text='Home', on_click=lambda _:page.go('/')),
             AppBar(title=Text('Login'), bgcolor='blue'),
             Text(value='Login', size=30),
             ft.Row(
@@ -46,9 +47,10 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
                     user_login,
                     user_pass,
                     btn_auth,
-                  ]
+                  ],horizontal_alignment=CrossAxisAlignment.CENTER,
                 )
-              ]
+              ],
+              alignment=ft.MainAxisAlignment.CENTER
             )
           ],
             vertical_alignment=MainAxisAlignment.CENTER,

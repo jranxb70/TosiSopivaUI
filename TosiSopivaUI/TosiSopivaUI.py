@@ -10,6 +10,7 @@ from views.page_all_invoices import page_all_invoices
 from views.temp_nav import temp_nav
 
 def main(page: ft.Page):
+    page.theme_mode = 'dark'
     app_routes = [
         
         path(url="/", clear= True,view=Home),
@@ -22,7 +23,6 @@ def main(page: ft.Page):
     ]
     
     Routing(page=page, app_routes=app_routes)
-  
     
     page.go(page.route)
     

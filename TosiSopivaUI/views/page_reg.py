@@ -36,8 +36,8 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
     user_pass = ft.TextField(label='Pass', password=True, width=200, on_change=validate)
     btn_reg = ft.OutlinedButton(text='Sign in', width=200, on_click=register, disabled=True)
     btn_auth = ft.OutlinedButton(text='Login', width=200, on_click=lambda _:page.go('/page_auth'), disabled=True)
-    btn_change = ft.ElevatedButton(text='Click me!', on_click=lambda _:page.go('/page_auth'))
-    reg_field = ft.Text('Already registered?')
+    btn_change = ft.ElevatedButton(text='Click me!', width=200, on_click=lambda _:page.go('/page_auth'))
+    reg_field = ft.Text('Already registered?',width=200,  text_align=ft.TextAlign.CENTER)
     return ft.View(
         "/page_reg",
         
@@ -54,9 +54,10 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
                     btn_reg,
                     reg_field,
                     btn_change
-                  ]
+                  ],
                 )
-              ]
+              ],
+              alignment=ft.MainAxisAlignment.CENTER
             )
           ],
         vertical_alignment=MainAxisAlignment.CENTER,
