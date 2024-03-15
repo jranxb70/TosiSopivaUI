@@ -11,7 +11,7 @@ def temp_nav(page: ft.Page, params: Params, basket: Basket):
             AppBar(title=Text('Temp NAv bar'), bgcolor='blue'),
             ElevatedButton(text='Clients', on_click=lambda _:page.go('/page_all_clients')),
             ElevatedButton(text='Products', on_click=lambda _:page.go('/page_all_products')),
-            # ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),
+            ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,
