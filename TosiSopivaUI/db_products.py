@@ -4,6 +4,7 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
+     	DataColumn(Text("actions")),
 		DataColumn(Text("name")),
 		DataColumn(Text("quantity")),
 		DataColumn(Text("price")),

@@ -18,6 +18,7 @@ def create_table():
 
 tb = DataTable(
 	columns=[
+     	DataColumn(Text("actions")),
 		DataColumn(Text("client_id")),
 		DataColumn(Text("invoice_date")),
 		DataColumn(Text("invoice_subtotal")),
