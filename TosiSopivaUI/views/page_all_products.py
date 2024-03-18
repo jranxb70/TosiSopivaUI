@@ -33,9 +33,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
 
 			page.snack_bar = SnackBar(
-				Text("success INPUT"),
-				bgcolor="green"
-				)
+				Text("Saved"),)
 
 			page.snack_bar.open = True
 
@@ -52,8 +50,16 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 	# CREATE FIELD FOR INPUT
 
 	name = TextField(label="name")
-	quantity = TextField(label="quantity")
-	price = TextField(label="price")
+	quantity = TextField(label="quantity", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+        )) 
+	price = TextField(label="price", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9,.]",
+            replacement_string="",
+        ))
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -64,7 +70,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new data",size=20,weight="bold"),
+				Text("Add new product",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
@@ -72,9 +78,8 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 				name,
 				quantity,
 				price,
-				FilledButton("save data",
-				on_click=savedata
-					)
+				FilledButton("Save",
+				on_click=savedata)
 			])
 		)
 	)
@@ -85,7 +90,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
        	controls=[
             AppBar().build(),
             Text("CLIENTS",size=30,weight="bold"),
-			ElevatedButton("add new data", on_click=showInput),
+			ElevatedButton("add new product", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),
 		mytable,
 		# AND DIALOG FOR ADD DATA

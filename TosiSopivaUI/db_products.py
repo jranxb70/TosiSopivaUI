@@ -28,13 +28,20 @@ def showdelete(e):
 
 id_edit = Text()
 name_edit = TextField(label="name")
-quantity_edit = TextField(label="quantity")
-price_edit = TextField(label="price")
+quantity_edit = TextField(label="quantity", input_filter=InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+        ))
+price_edit = TextField(label="price", input_filter=InputFilter(
+            allow=True,
+            regex_string=r"[0-9,.]",
+            replacement_string="",
+        ))
 
 def hidedlg(e):
 	dlg.visible = False
 	dlg.update()
-
 
 def updateandsave(e):
 	try:
@@ -52,7 +59,6 @@ def updateandsave(e):
 		print(e)
 
 dlg = Container(
-	bgcolor="blue200",
 	padding=10,
 			content=Column([
 				Row([

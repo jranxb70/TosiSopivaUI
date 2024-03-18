@@ -1,3 +1,4 @@
+import flet as ft
 from flet import *
 import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
@@ -32,14 +33,17 @@ id_edit = Text()
 name_edit = TextField(label="name")
 surname_edit = TextField(label="surname")
 address_edit = TextField(label="address")
-zip_edit = TextField(label="zip")
+zip_edit = TextField(label="zip",input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+        ))
 city_edit = TextField(label="city")
 
 def hidedlg(e):
 	dlg.visible = False
 	dlg.update()
-
-
+ 
 def updateandsave(e):
 	try:
 		myid = id_edit.value
@@ -56,7 +60,6 @@ def updateandsave(e):
 		print(e)
 
 dlg = Container(
-	bgcolor="blue200",
 	padding=10,
 			content=Column([
 				Row([
@@ -69,7 +72,6 @@ dlg = Container(
 				zip_edit,
 				city_edit,
 				ElevatedButton("Update",on_click=updateandsave)
-
 				])
 )
 
@@ -81,7 +83,6 @@ def showedit(e):
 	address_edit.value = data_edit['address']
 	zip_edit.value = data_edit['zip']
 	city_edit.value = data_edit['city']
-
 
 	dlg.visible = True
 	dlg.update()
@@ -97,7 +98,6 @@ def create_table():
 		city TEXT)
 		""")
 	conn.commit()
-
 
 def calldb():
 	create_table()
@@ -133,7 +133,6 @@ def calldb():
                 ),
 
 		)
-
 
 calldb()
 

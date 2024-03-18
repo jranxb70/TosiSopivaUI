@@ -33,9 +33,7 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
 
 			page.snack_bar = SnackBar(
-				Text("success INPUT"),
-				bgcolor="green"
-				)
+				Text("Saved"),)
 
 			page.snack_bar.open = True
 
@@ -54,7 +52,11 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 	name = TextField(label="name")
 	surname = TextField(label="surname")
 	address = TextField(label="address")
-	zip = TextField(label="zip")
+	zip = ft.TextField(label="zip",input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+        ))
 	city = TextField(label="city")
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
@@ -66,7 +68,7 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new data",size=20,weight="bold"),
+				Text("Add new client",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
@@ -76,7 +78,7 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 				address,
 				zip,
 				city,
-				FilledButton("save data",
+				FilledButton("Save",
 				on_click=savedata
 					)
 			])
