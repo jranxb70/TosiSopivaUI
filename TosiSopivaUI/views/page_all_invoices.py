@@ -95,7 +95,7 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
     	"/page_all_invoices",
         
        	controls=[
-             AppBar().build(),
+        	AppBar().build(),
             Text("INVOICES",size=30,weight="bold"),
 			ElevatedButton("add new invoice", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),

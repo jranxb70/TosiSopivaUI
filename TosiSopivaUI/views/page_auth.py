@@ -12,12 +12,12 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
 
         cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
         if cur.fetchone() != None:
-            Page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
-            Page.snack_bar.open = True
+            page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
+            page.snack_bar.open = True
             page.go('/temp_nav')
         else:
-            Page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
-            Page.snack_bar.open = True
+            page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
+            page.snack_bar.open = True
             page.update()
         db.commit()
         db.close()
@@ -38,7 +38,6 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
         
         controls = [
             AppBar().build(),
-            ElevatedButton(text='Home', on_click=lambda _:page.go('/')),
             Text(value='Login', size=30),
             ft.Row(
               [
