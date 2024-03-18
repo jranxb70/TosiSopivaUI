@@ -1,6 +1,7 @@
 import flet as ft
 from flet_route import Params, Basket
 from flet import *
+from views.app_bar import AppBar
 
 def temp_nav(page: ft.Page, params: Params, basket: Basket):
 
@@ -8,7 +9,7 @@ def temp_nav(page: ft.Page, params: Params, basket: Basket):
         "/temp_nav",
         
        controls=[
-            AppBar(title=Text('Temp NAv bar'), bgcolor='blue'),
+            AppBar().build(),
             ElevatedButton(text='Clients', on_click=lambda _:page.go('/page_all_clients')),
             ElevatedButton(text='Products', on_click=lambda _:page.go('/page_all_products')),
             ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),

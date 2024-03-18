@@ -1,7 +1,7 @@
 import flet as ft
 from flet import *
 from flet_route import Params, Basket
-
+from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
 from db_clients import mytable, tb, calldb
 import sqlite3
@@ -87,6 +87,7 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
     	"/page_all_clients",
         
        	controls=[
+            AppBar().build(),
             Text("CLIENTS",size=30,weight="bold"),
 			ElevatedButton("add new data", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),

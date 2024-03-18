@@ -2,6 +2,7 @@ import flet as ft
 from flet_route import Params, Basket
 import sqlite3
 from flet import *
+from views.app_bar import AppBar
 
 def page_auth(page: ft.Page, params: Params, basket: Basket):
         
@@ -36,8 +37,8 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
         "/page_auth",
         
         controls = [
+            AppBar().build(),
             ElevatedButton(text='Home', on_click=lambda _:page.go('/')),
-            AppBar(title=Text('Login'), bgcolor='blue'),
             Text(value='Login', size=30),
             ft.Row(
               [

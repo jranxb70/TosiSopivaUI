@@ -1,8 +1,8 @@
 import flet as ft
 from flet_route import Params, Basket
 import sqlite3
-
-from flet import *
+from flet import * 
+from views.app_bar import AppBar   
 
 def page_reg(page: ft.Page, params: Params, basket: Basket):
     
@@ -30,8 +30,8 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
         else:
             btn_reg.disabled = True
             btn_auth.disabled = True
-        page.update() 
-
+        page.update()
+   
     user_login = ft.TextField(label='Login', width=200, on_change=validate)
     user_pass = ft.TextField(label='Pass', password=True, width=200, on_change=validate)
     btn_reg = ft.OutlinedButton(text='Sign in', width=200, on_click=register, disabled=True)
@@ -42,7 +42,7 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
         "/page_reg",
         
         controls = [
-            AppBar(title=Text('Registration'), bgcolor='blue'),
+            AppBar().build(),
             Text(value='Registration', size=30),
             ft.Row(
               [
