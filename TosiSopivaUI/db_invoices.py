@@ -18,7 +18,6 @@ def create_table():
 
 tb = DataTable(
 	columns=[
-     	DataColumn(Text("actions")),
 		DataColumn(Text("client_id")),
 		DataColumn(Text("invoice_date")),
 		DataColumn(Text("invoice_subtotal")),
@@ -26,6 +25,7 @@ tb = DataTable(
 		DataColumn(Text("invoice_tax")),
 		DataColumn(Text("bank_reference")),
 		DataColumn(Text("invoice_lines")),
+    	DataColumn(Text("actions")),
 	],
 	rows=[]
 	)
@@ -75,7 +75,6 @@ def updateandsave(e):
 		print(e)
 
 dlg = Container(
-	bgcolor="blue200",
 	padding=10,
 			content=Column([
 				Row([
@@ -123,26 +122,23 @@ def calldb():
 			tb.rows.append(
 				DataRow(
                     cells=[
-                        DataCell(Row([
-                        	IconButton(icon="create",icon_color="blue",
-                        		data=x,
-                        		on_click=showedit
-
-                        		),
-                        	IconButton(icon="delete",icon_color="red",
-                        		data=x['id'],
-                        	on_click=showdelete
-
-                        		),
-                        	])),
                         DataCell(Text(x['client_id'])),
                         DataCell(Text(x['invoice_date'])),
                         DataCell(Text(x['invoice_subtotal'])),
                         DataCell(Text(x['invoice_total'])),
                         DataCell(Text(x['invoice_tax'])),
                         DataCell(Text(x['bank_reference'])),
-                        DataCell(Text(x['bank_reference'])),
                         DataCell(Text(x['invoice_lines'])),
+                        DataCell(Row([
+                        	IconButton(icon="create",icon_color="blue",
+                        		data=x,
+                        		on_click=showedit
+                        		),
+                        	IconButton(icon="delete",icon_color="red",
+                        		data=x['id'],
+                        	on_click=showdelete
+                        		),
+                        	])),
                     ],
                 ),
 

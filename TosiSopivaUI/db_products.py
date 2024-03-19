@@ -4,10 +4,10 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
-     	DataColumn(Text("actions")),
 		DataColumn(Text("name")),
 		DataColumn(Text("quantity")),
 		DataColumn(Text("price")),
+    DataColumn(Text("actions")),
 	],
 	rows=[]
 	)
@@ -69,7 +69,6 @@ dlg = Container(
 				quantity_edit,
 				price_edit,
 				ElevatedButton("Update",on_click=updateandsave)
-
 				])
 )
 
@@ -106,26 +105,23 @@ def calldb():
 			tb.rows.append(
 				DataRow(
                     cells=[
+                        DataCell(Text(x['name'])),
+                        DataCell(Text(x['quantity'])),
+                        DataCell(Text(x['price'])),
                         DataCell(Row([
                         	IconButton(icon="create",icon_color="blue",
                         		data=x,
                         		on_click=showedit
-
-                        		),
+                        	),
                         	IconButton(icon="delete",icon_color="red",
                         		data=x['id'],
                         	on_click=showdelete
-
-                        		),
-                        	])),
-                        DataCell(Text(x['name'])),
-                        DataCell(Text(x['quantity'])),
-                        DataCell(Text(x['price'])),
+                        	),
+                        ])),
                     ],
                 ),
 
 		)
-
 
 calldb()
 

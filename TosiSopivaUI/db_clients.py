@@ -5,12 +5,12 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
-     	DataColumn(Text("actions")),
 		DataColumn(Text("name")),
 		DataColumn(Text("surname")),
 		DataColumn(Text("address")),
 		DataColumn(Text("zip")),
 		DataColumn(Text("city")),
+    DataColumn(Text("actions")),
 	],
 	rows=[]
 	)
@@ -110,28 +110,24 @@ def calldb():
 		result = [dict(zip(keys, values)) for values in clients]
 		for x in result:
 			tb.rows.append(
-				DataRow(
-                    cells=[
-                        DataCell(Row([
-                        	IconButton(icon="create",icon_color="blue",
-                        		data=x,
+				DataRow(cells=[        
+                  DataCell(Text(x['name'])),
+                  DataCell(Text(x['surname'])),
+                  DataCell(Text(x['address'])),
+                  DataCell(Text(x['zip'])),
+                  DataCell(Text(x['city'])),
+                  DataCell(Row([
+                    IconButton(icon="create",icon_color="blue",
+                         		data=x,
                         		on_click=showedit
-
-                        		),
-                        	IconButton(icon="delete",icon_color="red",
-                        		data=x['id'],
+                 		),
+                   	IconButton(icon="delete",icon_color="red",
+                       		data=x['id'],
                         	on_click=showdelete
-
-                        		),
-                        	])),
-                        DataCell(Text(x['name'])),
-                        DataCell(Text(x['surname'])),
-                        DataCell(Text(x['address'])),
-                        DataCell(Text(x['zip'])),
-                        DataCell(Text(x['city'])),
-                    ],
+                 		),
+                 	])),
+                ],
                 ),
-
 		)
 
 calldb()
