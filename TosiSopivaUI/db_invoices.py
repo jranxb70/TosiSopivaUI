@@ -1,5 +1,7 @@
+import flet as ft
 from flet import *
 import sqlite3
+
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 def create_table():
@@ -18,14 +20,15 @@ def create_table():
 
 tb = DataTable(
 	columns=[
-		DataColumn(Text("client_id")),
-		DataColumn(Text("invoice_date")),
-		DataColumn(Text("invoice_subtotal")),
-		DataColumn(Text("invoice_total")),
-		DataColumn(Text("invoice_tax")),
-		DataColumn(Text("bank_reference")),
+     	DataColumn(Text("id")),
+		DataColumn(Text("Client")),
+		DataColumn(Text("Date")),
+		DataColumn(Text("Subtotal")),
+		DataColumn(Text("Total")),
+		DataColumn(Text("Tax")),
+		DataColumn(Text("Bank reference")),
 		DataColumn(Text("invoice_lines")),
-    	DataColumn(Text("actions")),
+    	DataColumn(Text("Actions")),
 	],
 	rows=[]
 	)
@@ -89,7 +92,6 @@ dlg = Container(
                 bank_reference,
                 invoice_lines,
 				ElevatedButton("Update",on_click=updateandsave)
-
 				])
 )
 
@@ -104,13 +106,63 @@ def showedit(e):
 	bank_reference.value = data_edit['bank_reference']
 	invoice_lines.value = data_edit['invoice_lines']
 
-
 	dlg.visible = True
 	dlg.update()
  
+bill = DataTable(
+	columns=[
+     	DataColumn(Text("id")),
+		DataColumn(Text("Client")),
+		DataColumn(Text("Date")),
+		DataColumn(Text("Subtotal")),
+		DataColumn(Text("Total")),
+		DataColumn(Text("Tax")),
+		DataColumn(Text("Bank reference")),
+		DataColumn(Text("invoice_lines")),
+    	DataColumn(Text("Actions")),
+	],
+	rows=[]
+	)
+youid = Text("")
+
+def show_detail(e):
+	page = e.page
+	youid = int(e.control.data)
+	c = conn.cursor()
+	c.execute("SELECT * FROM invoices WHERE id=?", (youid, ))
+	invoices = c.fetchall()
+	print(invoices)
+	keys = ['id', 'client_id', 'invoice_date', 'invoice_subtotal', 'invoice_total', 'invoice_tax', 'bank_reference', 'invoice_lines']
+	result = [dict(zip(keys, values)) for values in invoices]
+	print(result)
+	for x in result:
+			bill.rows.append(
+				DataRow(
+                    cells=[
+                        DataCell(Text(x['id'])),
+                        DataCell(Text(x['client_id'])),
+                        DataCell(Text(x['invoice_date'])),
+                        DataCell(Text(x['invoice_subtotal'])),
+                        DataCell(Text(x['invoice_total'])),
+                        DataCell(Text(x['invoice_tax'])),
+                        DataCell(Text(x['bank_reference'])),
+                        DataCell(Text(x['invoice_lines'])),
+                        DataCell(Row([
+                        	IconButton(icon="delete",icon_color="red",
+                        		data=x['id'],
+                        	on_click=showdelete
+                        		),
+                        	])),
+                    ],
+                ),
+
+		)
+
+	# conn.commit()
+	page.go('/page_invoice_details')
+ 
 def calldb():
 	create_table()
-    
 	c = conn.cursor()
 	c.execute("SELECT * FROM invoices")
 	invoices = c.fetchall()
@@ -122,15 +174,21 @@ def calldb():
 			tb.rows.append(
 				DataRow(
                     cells=[
+                        DataCell(Text(x['id'])),
                         DataCell(Text(x['client_id'])),
                         DataCell(Text(x['invoice_date'])),
                         DataCell(Text(x['invoice_subtotal'])),
                         DataCell(Text(x['invoice_total'])),
                         DataCell(Text(x['invoice_tax'])),
                         DataCell(Text(x['bank_reference'])),
-                        DataCell(Text(x['invoice_lines'])),
+                        # DataCell(Text(x['invoice_lines'])),
+                        DataCell(IconButton(icon="REQUEST_PAGE",icon_color="blue",
+                        		data=x['id'],
+                        		on_click=show_detail
+                        		),
+        				),
                         DataCell(Row([
-                        	IconButton(icon="create",icon_color="blue",
+                        	IconButton(icon="EDIT",icon_color="blue",
                         		data=x,
                         		on_click=showedit
                         		),
@@ -143,7 +201,6 @@ def calldb():
                 ),
 
 		)
-
 
 calldb()
 

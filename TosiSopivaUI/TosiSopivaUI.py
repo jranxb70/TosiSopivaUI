@@ -1,5 +1,5 @@
 import flet as ft
-from flet import *
+from flet import *          
 from flet_route import Routing, path
 from views.home import Home
 from views.page_reg import page_reg
@@ -7,6 +7,7 @@ from views.page_auth import page_auth
 from views.page_all_clients import page_all_clients
 from views.page_all_products import page_all_products
 from views.page_all_invoices import page_all_invoices
+from views.page_invoice_details import page_invoice_details
 from views.temp_nav import temp_nav
 
 def main(page: ft.Page):
@@ -20,6 +21,7 @@ def main(page: ft.Page):
         path(url="/page_all_products",clear= True, view=page_all_products),
         path(url="/page_all_invoices",clear= True, view=page_all_invoices),
         path(url="/temp_nav",clear= True, view=temp_nav),
+        path(url="/page_invoice_details",clear= True, view=page_invoice_details),
     ]
     
     Routing(page=page, app_routes=app_routes)

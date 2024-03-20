@@ -109,7 +109,7 @@ def calldb():
                         DataCell(Text(x['quantity'])),
                         DataCell(Text(x['price'])),
                         DataCell(Row([
-                        	IconButton(icon="create",icon_color="blue",
+                        	IconButton(icon="EDIT",icon_color="blue",
                         		data=x,
                         		on_click=showedit
                         	),

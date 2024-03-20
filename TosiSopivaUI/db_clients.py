@@ -117,7 +117,7 @@ def calldb():
                   DataCell(Text(x['zip'])),
                   DataCell(Text(x['city'])),
                   DataCell(Row([
-                    IconButton(icon="create",icon_color="blue",
+                    IconButton(icon="EDIT",icon_color="blue",
                          		data=x,
                         		on_click=showedit
                  		),
