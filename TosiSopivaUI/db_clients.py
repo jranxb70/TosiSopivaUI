@@ -10,7 +10,7 @@ tb = DataTable(
 		DataColumn(Text("address")),
 		DataColumn(Text("zip")),
 		DataColumn(Text("city")),
-    DataColumn(Text("actions")),
+    	DataColumn(Text("actions")),
 	],
 	rows=[]
 	)
@@ -21,7 +21,6 @@ def showdelete(e):
 		c = conn.cursor()
 		c.execute("DELETE FROM clients WHERE id=?", (myid,))
 		conn.commit()
-		print("success delete")
 		tb.rows.clear()	
 		calldb()
 		tb.update()
@@ -50,7 +49,6 @@ def updateandsave(e):
 		c = conn.cursor()
 		c.execute("UPDATE clients SET name=?, surname=?, address=?, zip=?, city=? WHERE id=?", (name_edit.value, surname_edit.value, address_edit.value, zip_edit.value, city_edit.value, myid))
 		conn.commit()
-		print("success Edit ")
 		tb.rows.clear()	
 		calldb()
 		dlg.visible = False
@@ -104,7 +102,6 @@ def calldb():
 	c = conn.cursor()
 	c.execute("SELECT * FROM clients")
 	clients = c.fetchall()
-	print(clients)
 	if not clients == "":
 		keys = ['id', 'name', 'surname', 'address', 'zip', 'city']
 		result = [dict(zip(keys, values)) for values in clients]

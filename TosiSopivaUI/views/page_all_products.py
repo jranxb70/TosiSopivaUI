@@ -25,30 +25,25 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 			c = conn.cursor()
 			c.execute("INSERT INTO products (name,quantity,price) VALUES(?,?,?)",(name.value,quantity.value,price.value))
 			conn.commit()
-			print("success")
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
 			inputcon.offset = transform.Offset(2,0)
 
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
-
 			page.snack_bar = SnackBar(
 				Text("Saved"),)
-
 			page.snack_bar.open = True
-
+   
 			# REFRESH TABLE
 			tb.rows.clear()
 			calldb()
 			tb.update()
 			page.update()
 
-
 		except Exception as e:
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-
 	name = TextField(label="name")
 	quantity = TextField(label="quantity", input_filter=ft.InputFilter(
             allow=True,

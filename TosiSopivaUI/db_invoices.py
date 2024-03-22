@@ -1,6 +1,7 @@
 import flet as ft
 from flet import *
 import sqlite3
+from Bill import get_invoice
 
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
@@ -39,7 +40,6 @@ def showdelete(e):
 		c = conn.cursor()
 		c.execute("DELETE FROM invoices WHERE id=?", (myid,))
 		conn.commit()
-		print("success delete")
 		tb.rows.clear()	
 		calldb()
 		tb.update()
@@ -68,7 +68,6 @@ def updateandsave(e):
 		c.execute("UPDATE invoices SET client_id=?, invoice_date=?, invoice_subtotal=?, invoice_total=?, invoice_tax=?, bank_reference=?, invoice_lines=? WHERE id=?",
             (client_id.value,invoice_date.value,invoice_subtotal.value, invoice_total.value, invoice_tax.value, bank_reference.value, invoice_lines.value, myid))
 		conn.commit()
-		print("success Edit ")
 		tb.rows.clear()	
 		calldb()
 		dlg.visible = False
@@ -104,7 +103,7 @@ def showedit(e):
 	invoice_total.value = data_edit['invoice_total']
 	invoice_tax.value = data_edit['invoice_tax']
 	bank_reference.value = data_edit['bank_reference']
-	invoice_lines.value = data_edit['invoice_lines']
+	invoice_lines.value = data_edit['Show detail']
 
 	dlg.visible = True
 	dlg.update()
@@ -119,46 +118,33 @@ bill = DataTable(
 		DataColumn(Text("Tax")),
 		DataColumn(Text("Bank reference")),
 		DataColumn(Text("invoice_lines")),
-    	DataColumn(Text("Actions")),
 	],
 	rows=[]
 	)
-youid = Text("")
 
 def show_detail(e):
 	page = e.page
-	youid = int(e.control.data)
+	my_id = int(e.control.data)
 	c = conn.cursor()
-	c.execute("SELECT * FROM invoices WHERE id=?", (youid, ))
-	invoices = c.fetchall()
-	print(invoices)
-	keys = ['id', 'client_id', 'invoice_date', 'invoice_subtotal', 'invoice_total', 'invoice_tax', 'bank_reference', 'invoice_lines']
-	result = [dict(zip(keys, values)) for values in invoices]
-	print(result)
-	for x in result:
-			bill.rows.append(
-				DataRow(
-                    cells=[
-                        DataCell(Text(x['id'])),
-                        DataCell(Text(x['client_id'])),
-                        DataCell(Text(x['invoice_date'])),
-                        DataCell(Text(x['invoice_subtotal'])),
-                        DataCell(Text(x['invoice_total'])),
-                        DataCell(Text(x['invoice_tax'])),
-                        DataCell(Text(x['bank_reference'])),
-                        DataCell(Text(x['invoice_lines'])),
-                        DataCell(Row([
-                        	IconButton(icon="delete",icon_color="red",
-                        		data=x['id'],
-                        	on_click=showdelete
-                        		),
-                        	])),
-                    ],
-                ),
-
-		)
-
-	# conn.commit()
+	c.execute("SELECT * FROM invoices WHERE id=?", (my_id, ))
+	invoice = list(c.fetchone())
+	get_invoice(invoice)
+	bill.rows.clear()
+	bill.rows.append(
+		DataRow(
+            cells=[
+                DataCell(Text(invoice[0])),
+                DataCell(Text(invoice[1])),
+                DataCell(Text(invoice[2])),
+                DataCell(Text(invoice[3])),
+                DataCell(Text(invoice[4])),
+                DataCell(Text(invoice[5])),
+                DataCell(Text(invoice[6])),
+                DataCell(Text(invoice[7])),
+            ],
+        ),
+	)
+	conn.commit()
 	page.go('/page_invoice_details')
  
 def calldb():
@@ -166,7 +152,6 @@ def calldb():
 	c = conn.cursor()
 	c.execute("SELECT * FROM invoices")
 	invoices = c.fetchall()
-	print(invoices)
 	if not invoices == "":
 		keys = ['id', 'client_id', 'invoice_date', 'invoice_subtotal', 'invoice_total', 'invoice_tax', 'bank_reference', 'invoice_lines']
 		result = [dict(zip(keys, values)) for values in invoices]
@@ -181,7 +166,6 @@ def calldb():
                         DataCell(Text(x['invoice_total'])),
                         DataCell(Text(x['invoice_tax'])),
                         DataCell(Text(x['bank_reference'])),
-                        # DataCell(Text(x['invoice_lines'])),
                         DataCell(IconButton(icon="REQUEST_PAGE",icon_color="blue",
                         		data=x['id'],
                         		on_click=show_detail

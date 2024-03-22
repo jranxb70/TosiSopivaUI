@@ -1,5 +1,5 @@
 import flet as ft
-from flet import *          
+from flet import *
 from flet_route import Routing, path
 from views.home import Home
 from views.page_reg import page_reg

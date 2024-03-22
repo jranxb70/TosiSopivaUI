@@ -7,7 +7,7 @@ tb = DataTable(
 		DataColumn(Text("name")),
 		DataColumn(Text("quantity")),
 		DataColumn(Text("price")),
-    DataColumn(Text("actions")),
+    	DataColumn(Text("actions")),
 	],
 	rows=[]
 	)
@@ -18,7 +18,6 @@ def showdelete(e):
 		c = conn.cursor()
 		c.execute("DELETE FROM products WHERE id=?", (myid,))
 		conn.commit()
-		print("success delete")
 		tb.rows.clear()	
 		calldb()
 		tb.update()
@@ -49,7 +48,6 @@ def updateandsave(e):
 		c = conn.cursor()
 		c.execute("UPDATE products SET name=?, quantity=?, price=? WHERE id=?", (name_edit.value, quantity_edit.value, price_edit.value, myid))
 		conn.commit()
-		print("success Edit ")
 		tb.rows.clear()	
 		calldb()
 		dlg.visible = False
@@ -97,7 +95,6 @@ def calldb():
 	c = conn.cursor()
 	c.execute("SELECT * FROM products")
 	products = c.fetchall()
-	print(products)
 	if not products == "":
 		keys = ['id', 'name', 'quantity', 'price']
 		result = [dict(zip(keys, values)) for values in products]

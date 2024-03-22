@@ -25,16 +25,13 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 			c = conn.cursor()
 			c.execute("INSERT INTO clients (name,surname,address,zip,city) VALUES(?,?,?,?,?)",(name.value,surname.value,address.value,zip.value,city.value))
 			conn.commit()
-			print("success")
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
 			inputcon.offset = transform.Offset(2,0)
 
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
-
 			page.snack_bar = SnackBar(
 				Text("Saved"),)
-
 			page.snack_bar.open = True
 
 			# REFRESH TABLE
