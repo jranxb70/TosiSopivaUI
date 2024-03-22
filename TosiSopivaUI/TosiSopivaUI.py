@@ -1,14 +1,16 @@
 import flet as ft
 from flet import *
+import sqlite3
 from flet_route import Routing, path
 from views.home import Home
 from views.page_reg import page_reg
 from views.page_auth import page_auth
-from views.page_all_clients import page_all_clients
+from views.page_all_customers import page_all_customers
 from views.page_all_products import page_all_products
 from views.page_all_invoices import page_all_invoices
 from views.page_invoice_details import page_invoice_details
 from views.temp_nav import temp_nav
+conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 def main(page: ft.Page):
     page.theme_mode = 'dark'
@@ -17,7 +19,7 @@ def main(page: ft.Page):
         path(url="/", clear= True,view=Home),
         path(url="/page_reg",clear= True, view=page_reg),
         path(url="/page_auth",clear= True, view=page_auth),
-        path(url="/page_all_clients",clear= True, view=page_all_clients),
+        path(url="/page_all_customers",clear= True, view=page_all_customers),
         path(url="/page_all_products",clear= True, view=page_all_products),
         path(url="/page_all_invoices",clear= True, view=page_all_invoices),
         path(url="/temp_nav",clear= True, view=temp_nav),

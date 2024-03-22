@@ -3,11 +3,11 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-from db_clients import mytable, tb, calldb
+from db_customers import mytable, tb, calldb
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
-def page_all_clients(page: ft.Page, params: Params, basket: Basket):
+def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 
 	page.scroll = "auto"
 
@@ -23,7 +23,7 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO clients (name,surname,address,zip,city) VALUES(?,?,?,?,?)",(name.value,surname.value,address.value,zip.value,city.value))
+			c.execute("INSERT INTO customers (name,surname,address,zip,city) VALUES(?,?,?,?,?)",(name.value,surname.value,address.value,zip.value,city.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -65,7 +65,7 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new client",size=20,weight="bold"),
+				Text("Add new customer",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
@@ -83,11 +83,11 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 	)
 
 	return ft.View(
-    	"/page_all_clients",
+    	"/page_all_customers",
         
        	controls=[
             AppBar().build(),
-            Text("CLIENTS",size=30,weight="bold"),
+            Text("CUSTOMERS",size=30,weight="bold"),
 			ElevatedButton("add new data", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),
 		mytable,

@@ -10,7 +10,7 @@ def temp_nav(page: ft.Page, params: Params, basket: Basket):
         
        controls=[
             AppBar().build(),
-            ElevatedButton(text='Clients', on_click=lambda _:page.go('/page_all_clients')),
+            ElevatedButton(text='Customers', on_click=lambda _:page.go('/page_all_customers')),
             ElevatedButton(text='Products', on_click=lambda _:page.go('/page_all_products')),
             ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),
         ],

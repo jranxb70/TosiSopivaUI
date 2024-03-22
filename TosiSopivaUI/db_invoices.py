@@ -1,4 +1,3 @@
-import flet as ft
 from flet import *
 import sqlite3
 from Bill import get_invoice
@@ -60,7 +59,6 @@ def hidedlg(e):
 	dlg.visible = False
 	dlg.update()
 
-
 def updateandsave(e):
 	try:
 		myid = id_edit.value
@@ -103,7 +101,7 @@ def showedit(e):
 	invoice_total.value = data_edit['invoice_total']
 	invoice_tax.value = data_edit['invoice_tax']
 	bank_reference.value = data_edit['bank_reference']
-	invoice_lines.value = data_edit['Show detail']
+	invoice_lines.value = data_edit['invoice_lines']
 
 	dlg.visible = True
 	dlg.update()
