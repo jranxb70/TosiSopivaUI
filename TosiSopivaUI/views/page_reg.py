@@ -13,9 +13,10 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
         cur.execute("""CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY,
             login TEXT,
-            pass TEXT
+            pass TEXT,
+            email TEXT
         )""")
-        cur.execute(f"INSERT INTO users VALUES(NULL, '{user_login.value}', '{user_pass.value}')")
+        cur.execute(f"INSERT INTO users VALUES(NULL, '{user_login.value}', '{user_pass.value}', '{user_email.value}')")
         db.commit()
         db.close()
         
@@ -24,7 +25,7 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
         page.go('/page_auth')
 
     def validate(e):
-        if all([user_login.value, user_pass.value]):   
+        if all([user_login.value, user_pass.value, user_email.value]):   
             btn_reg.disabled = False
             btn_auth.disabled = False
         else:
@@ -34,6 +35,7 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
    
     user_login = ft.TextField(label='Login', width=200, on_change=validate)
     user_pass = ft.TextField(label='Pass', password=True, width=200, on_change=validate)
+    user_email = ft.TextField(label='Email', width=200, on_change=validate)
     btn_reg = ft.OutlinedButton(text='Sign in', width=200, on_click=register, disabled=True)
     btn_auth = ft.OutlinedButton(text='Login', width=200, on_click=lambda _:page.go('/page_auth'), disabled=True)
     btn_change = ft.ElevatedButton(text='Click me!', width=200, on_click=lambda _:page.go('/page_auth'))
@@ -51,6 +53,7 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
                     ft.Text('Sign in'),
                     user_login,
                     user_pass,
+                    user_email,
                     btn_reg,
                     reg_field,
                     btn_change
