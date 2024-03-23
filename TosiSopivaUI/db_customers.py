@@ -41,7 +41,11 @@ zip_edit = TextField(label="zip",input_filter=ft.InputFilter(
             replacement_string="",
         ))
 city_edit = TextField(label="city")
-phone_edit = TextField(label="phone")
+phone_edit = TextField(label="phone", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9+]",
+            replacement_string="",
+        ))
 email_edit = TextField(label="email")
 
 def hidedlg(e):

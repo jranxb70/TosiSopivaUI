@@ -55,7 +55,11 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
             replacement_string="",
         ))
 	city = TextField(label="city")
-	phone = TextField(label="phone")
+	phone = TextField(label="phone", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9+]",
+            replacement_string="",
+        ))
 	email = TextField(label="email")
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 

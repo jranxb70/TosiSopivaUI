@@ -1,5 +1,6 @@
 import flet as ft
 from flet_route import Params, Basket
+from validate_email import validate_email
 import sqlite3
 from flet import * 
 from views.app_bar import AppBar   
@@ -19,13 +20,17 @@ def page_reg(page: ft.Page, params: Params, basket: Basket):
         cur.execute(f"INSERT INTO users VALUES(NULL, '{user_login.value}', '{user_pass.value}', '{user_email.value}')")
         db.commit()
         db.close()
-        
-        page.snack_bar = ft.SnackBar(ft.Text('Registered!'))
-        page.snack_bar.open = True
-        page.go('/page_auth')
+        if validate_email(user_email.value) == True:
+          page.snack_bar = ft.SnackBar(ft.Text('Registered!'))
+          page.snack_bar.open = True
+          page.go('/page_auth')
+        else:
+          page.snack_bar = ft.SnackBar(ft.Text('Wrong email format!'))
+          page.snack_bar.open = True
+          page.update()      
 
     def validate(e):
-        if all([user_login.value, user_pass.value, user_email.value]):   
+        if all([user_login.value, user_pass.value, user_email.value]):
             btn_reg.disabled = False
             btn_auth.disabled = False
         else:
