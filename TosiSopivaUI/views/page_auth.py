@@ -14,7 +14,7 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
         if cur.fetchone() != None:
             page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
             page.snack_bar.open = True
-            page.go('/temp_nav')
+            page.go('/page_cabinet')
         else:
             page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
             page.snack_bar.open = True

@@ -23,7 +23,7 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO customers (name,surname,address,zip,city) VALUES(?,?,?,?,?)",(name.value,surname.value,address.value,zip.value,city.value))
+			c.execute("INSERT INTO customers (firstname,lastname,address,zip,city, phone, email) VALUES(?,?,?,?,?,?,?)",(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -46,8 +46,8 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 
 	# CREATE FIELD FOR INPUT
 
-	name = TextField(label="name")
-	surname = TextField(label="surname")
+	firstname = TextField(label="firstname")
+	lastname = TextField(label="lastname")
 	address = TextField(label="address")
 	zip = ft.TextField(label="zip",input_filter=ft.InputFilter(
             allow=True,
@@ -55,6 +55,8 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
             replacement_string="",
         ))
 	city = TextField(label="city")
+	phone = TextField(label="phone")
+	email = TextField(label="email")
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -70,11 +72,13 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 				on_click=hidecon
 					),
 					]),
-				name,
-				surname,
+				firstname,
+				lastname,
 				address,
 				zip,
 				city,
+				phone,
+				email,
 				FilledButton("Save",
 				on_click=savedata
 					)
@@ -89,7 +93,7 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
             AppBar().build(),
             Text("CUSTOMERS",size=30,weight="bold"),
 			ElevatedButton("add new data", on_click=showInput),
-   			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),
+   			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
 		inputcon 

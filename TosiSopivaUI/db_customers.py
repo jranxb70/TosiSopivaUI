@@ -5,12 +5,15 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
-		DataColumn(Text("name")),
-		DataColumn(Text("surname")),
-		DataColumn(Text("address")),
-		DataColumn(Text("zip")),
-		DataColumn(Text("city")),
-    	DataColumn(Text("actions")),
+		# DataColumn(Text("ID")),
+		DataColumn(Text("First name")),
+		DataColumn(Text("Last name")),
+		DataColumn(Text("Address")),
+		DataColumn(Text("Postal code")),
+		DataColumn(Text("City")),
+		DataColumn(Text("Phone")),
+		DataColumn(Text("Email")),
+    	DataColumn(Text("Actions")),
 	],
 	rows=[]
 	)
@@ -29,8 +32,8 @@ def showdelete(e):
 		print(e)
 
 id_edit = Text()
-name_edit = TextField(label="name")
-surname_edit = TextField(label="surname")
+firstname_edit = TextField(label="firstname")
+lastname_edit = TextField(label="lastname")
 address_edit = TextField(label="address")
 zip_edit = TextField(label="zip",input_filter=ft.InputFilter(
             allow=True,
@@ -38,6 +41,8 @@ zip_edit = TextField(label="zip",input_filter=ft.InputFilter(
             replacement_string="",
         ))
 city_edit = TextField(label="city")
+phone_edit = TextField(label="phone")
+email_edit = TextField(label="email")
 
 def hidedlg(e):
 	dlg.visible = False
@@ -47,7 +52,7 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-		c.execute("UPDATE customers SET name=?, surname=?, address=?, zip=?, city=? WHERE id=?", (name_edit.value, surname_edit.value, address_edit.value, zip_edit.value, city_edit.value, myid))
+		c.execute("UPDATE customers SET firstname=?, lastname=?, address=?, zip=?, city=?, phone=?, email=? WHERE id=?", (firstname_edit.value, lastname_edit.value, address_edit.value, zip_edit.value, city_edit.value,  phone_edit.value, email_edit.value, myid))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -64,11 +69,13 @@ dlg = Container(
 				Text("Edit Form",size=30,weight="bold"),
 				IconButton(icon="close",on_click=hidedlg),
 					],alignment="spaceBetween"),
-				name_edit,
-				surname_edit,
+				firstname_edit,
+				lastname_edit,
 				address_edit,
 				zip_edit,
 				city_edit,
+				phone_edit,
+				email_edit,
 				ElevatedButton("Update",on_click=updateandsave)
 				])
 )
@@ -76,11 +83,13 @@ dlg = Container(
 def showedit(e):
 	data_edit = e.control.data
 	id_edit.value = data_edit['id']
-	name_edit.value = data_edit['name']
-	surname_edit.value = data_edit['surname']
+	firstname_edit.value = data_edit['firstname']
+	lastname_edit.value = data_edit['lastname']
 	address_edit.value = data_edit['address']
 	zip_edit.value = data_edit['zip']
 	city_edit.value = data_edit['city']
+	phone_edit.value = data_edit['phone']
+	email_edit.value = data_edit['email']
 
 	dlg.visible = True
 	dlg.update()
@@ -89,11 +98,13 @@ def create_table():
 	c = conn.cursor()
 	c.execute("""CREATE TABLE IF NOT EXISTS customers(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT,
-		surname TEXT,
-		address INTEGER,
-		zip TEXT,
-		city TEXT)
+		firstname  TEXT,
+		lastname	TEXT,
+		address	TEXT,
+		zip        INTEGER,
+		city       TEXT,
+  		phone      TEXT,
+    	email     TEXT)
 		""")
 	conn.commit()
 
@@ -103,16 +114,18 @@ def calldb():
 	c.execute("SELECT * FROM customers")
 	clients = c.fetchall()
 	if not clients == "":
-		keys = ['id', 'name', 'surname', 'address', 'zip', 'city']
+		keys = ['id', 'firstname', 'lastname', 'address', 'zip', 'city', 'phone', 'email']
 		result = [dict(zip(keys, values)) for values in clients]
 		for x in result:
 			tb.rows.append(
 				DataRow(cells=[        
-                  DataCell(Text(x['name'])),
-                  DataCell(Text(x['surname'])),
+                  DataCell(Text(x['firstname'])),
+                  DataCell(Text(x['lastname'])),
                   DataCell(Text(x['address'])),
                   DataCell(Text(x['zip'])),
                   DataCell(Text(x['city'])),
+                  DataCell(Text(x['phone'])),
+                  DataCell(Text(x['email'])),
                   DataCell(Row([
                     IconButton(icon="EDIT",icon_color="blue",
                          		data=x,

@@ -9,7 +9,7 @@ from views.page_all_customers import page_all_customers
 from views.page_all_products import page_all_products
 from views.page_all_invoices import page_all_invoices
 from views.page_invoice_details import page_invoice_details
-from views.temp_nav import temp_nav
+from views.cabinet import page_cabinet
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 def main(page: ft.Page):
@@ -22,7 +22,7 @@ def main(page: ft.Page):
         path(url="/page_all_customers",clear= True, view=page_all_customers),
         path(url="/page_all_products",clear= True, view=page_all_products),
         path(url="/page_all_invoices",clear= True, view=page_all_invoices),
-        path(url="/temp_nav",clear= True, view=temp_nav),
+        path(url="/page_cabinet",clear= True, view=page_cabinet),
         path(url="/page_invoice_details",clear= True, view=page_invoice_details),
     ]
     
