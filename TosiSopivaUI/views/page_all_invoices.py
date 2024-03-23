@@ -29,17 +29,14 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 			c.execute("INSERT INTO invoices (client_id,invoice_date, invoice_subtotal, invoice_total, invoice_tax, bank_reference, invoice_lines) VALUES(?,?,?,?,?,?,?)",
              (client_id.value,invoice_date.value,invoice_subtotal.value, invoice_total.value, invoice_tax.value, bank_reference.value, invoice_lines.value))
 			conn.commit()
-			print("success")
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
 			inputcon.offset = transform.Offset(2,0)
 
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
-
 			page.snack_bar = SnackBar(
 				Text("Saved"),
 				)
-
 			page.snack_bar.open = True
 
 			# REFRESH TABLE
