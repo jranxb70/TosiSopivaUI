@@ -32,6 +32,10 @@ def generate_bill_pdf(filename):
     c.drawString(100, 630, f"Phone: {global_customer[6]}")
     c.drawString(100, 610, f"Email: {global_customer[7]}")
     c.drawString(100, 590, "Items:")
+    x = 570
+    for i in range(5):
+        c.drawString(100, x, "Items:")
+        x-=20
     y_position = 490
     y_position -= 20
     c.drawString(100, y_position, "Total: ")

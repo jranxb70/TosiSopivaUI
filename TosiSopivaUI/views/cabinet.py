@@ -13,6 +13,7 @@ def page_cabinet(page: ft.Page, params: Params, basket: Basket):
             Text("Cabinet",size=30,weight="bold"),
             ElevatedButton(text='Customers', on_click=lambda _:page.go('/page_all_customers')),
             ElevatedButton(text='Products', on_click=lambda _:page.go('/page_all_products')),
+            ElevatedButton(text='Companies', on_click=lambda _:page.go('/page_all_companies')),
             ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),
         ],
         vertical_alignment=MainAxisAlignment.CENTER,

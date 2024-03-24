@@ -3,11 +3,11 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-from db_customers import mytable, tb, calldb
+from db_companies import mytable, tb, calldb
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
-def page_all_customers(page: ft.Page, params: Params, basket: Basket):
+def page_all_companies(page: ft.Page, params: Params, basket: Basket):
 
 	page.scroll = "auto"
 
@@ -23,7 +23,7 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO customers (firstname,lastname,address,zip,city, phone, email) VALUES(?,?,?,?,?,?,?)",(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value))
+			c.execute("INSERT INTO company(name, address, zip, city, phone, business_id) VALUES(?,?,?,?,?,?)",(name.value, address.value, zip.value, city.value, phone.value, business_id.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -33,33 +33,35 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 			page.snack_bar = SnackBar(
 				Text("Saved"),)
 			page.snack_bar.open = True
-
+   
 			# REFRESH TABLE
 			tb.rows.clear()
 			calldb()
 			tb.update()
 			page.update()
 
-
 		except Exception as e:
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-	firstname = TextField(label="firstname")
-	lastname = TextField(label="lastname")
+	name = TextField(label="name")
 	address = TextField(label="address")
-	zip = ft.TextField(label="zip",input_filter=ft.InputFilter(
+	zip = TextField(label="zip", input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9]",
             replacement_string="",
-        ))
+    ))
 	city = TextField(label="city")
 	phone = TextField(label="phone", input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9+]",
             replacement_string="",
-        ))
-	email = TextField(label="email")
+    ))
+	business_id = TextField(label="business_id", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+    ))
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -70,32 +72,30 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new customer",size=20,weight="bold"),
+				Text("Add new company",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
 					]),
-				firstname,
-				lastname,
+				name,
 				address,
 				zip,
-				city,
+                city,
 				phone,
-				email,
+				business_id,
 				FilledButton("Save",
-				on_click=savedata
-					)
+				on_click=savedata)
 			])
 		)
 	)
 
 	return ft.View(
-    	"/page_all_customers",
+    	"/page_all_companies",
         
        	controls=[
             AppBar().build(),
-            Text("CUSTOMERS",size=30,weight="bold"),
-			ElevatedButton("add new data", on_click=showInput),
+            Text("COMPANIES",size=30,weight="bold"),
+			ElevatedButton("add new company", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
