@@ -22,7 +22,7 @@ def showdelete(e):
 	try:
 		myid = int(e.control.data)
 		c = conn.cursor()
-		c.execute("DELETE FROM customers WHERE id=?", (myid,))
+		c.execute("DELETE FROM customer WHERE id=?", (myid,))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -56,7 +56,7 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-		c.execute("UPDATE customers SET firstname=?, lastname=?, address=?, zip=?, city=?, phone=?, email=? WHERE id=?", (firstname_edit.value, lastname_edit.value, address_edit.value, zip_edit.value, city_edit.value,  phone_edit.value, email_edit.value, myid))
+		c.execute("UPDATE customer SET firstname=?, lastname=?, address=?, zip=?, city=?, phone=?, email=? WHERE id=?", (firstname_edit.value, lastname_edit.value, address_edit.value, zip_edit.value, city_edit.value,  phone_edit.value, email_edit.value, myid))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -100,7 +100,7 @@ def showedit(e):
  
 def create_table():
 	c = conn.cursor()
-	c.execute("""CREATE TABLE IF NOT EXISTS customers(
+	c.execute("""CREATE TABLE IF NOT EXISTS customer(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		firstname  TEXT,
 		lastname	TEXT,
@@ -115,7 +115,7 @@ def create_table():
 def calldb():
 	create_table()
 	c = conn.cursor()
-	c.execute("SELECT * FROM customers")
+	c.execute("SELECT * FROM customer")
 	clients = c.fetchall()
 	if not clients == "":
 		keys = ['id', 'firstname', 'lastname', 'address', 'zip', 'city', 'phone', 'email']

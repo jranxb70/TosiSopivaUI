@@ -23,7 +23,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO products (name,quantity,price) VALUES(?,?,?)",(name.value,quantity.value,price.value))
+			c.execute("INSERT INTO product (name,quantity,price) VALUES(?,?,?)",(name.value,quantity.value,price.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -84,7 +84,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
         
        	controls=[
             AppBar().build(),
-            Text("CLIENTS",size=30,weight="bold"),
+            Text("PRODUCTS",size=30,weight="bold"),
 			ElevatedButton("add new product", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,

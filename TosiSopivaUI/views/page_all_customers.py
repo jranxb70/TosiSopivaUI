@@ -23,7 +23,7 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO customers (firstname,lastname,address,zip,city, phone, email) VALUES(?,?,?,?,?,?,?)",(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value))
+			c.execute("INSERT INTO customer (firstname,lastname,address,zip,city, phone, email) VALUES(?,?,?,?,?,?,?)",(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS

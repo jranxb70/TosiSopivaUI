@@ -6,7 +6,7 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 def create_table():
 	c = conn.cursor()
-	c.execute("""CREATE TABLE IF NOT EXISTS invoices(
+	c.execute("""CREATE TABLE IF NOT EXISTS invoice(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
         client_id INTEGER,
 		invoice_date DATE,
@@ -37,7 +37,7 @@ def showdelete(e):
 	try:
 		myid = int(e.control.data)
 		c = conn.cursor()
-		c.execute("DELETE FROM invoices WHERE id=?", (myid,))
+		c.execute("DELETE FROM invoice WHERE id=?", (myid,))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -63,7 +63,7 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-		c.execute("UPDATE invoices SET client_id=?, invoice_date=?, invoice_subtotal=?, invoice_total=?, invoice_tax=?, bank_reference=?, invoice_lines=? WHERE id=?",
+		c.execute("UPDATE invoice SET client_id=?, invoice_date=?, invoice_subtotal=?, invoice_total=?, invoice_tax=?, bank_reference=?, invoice_lines=? WHERE id=?",
             (client_id.value,invoice_date.value,invoice_subtotal.value, invoice_total.value, invoice_tax.value, bank_reference.value, invoice_lines.value, myid))
 		conn.commit()
 		tb.rows.clear()	
@@ -124,7 +124,7 @@ def show_detail(e):
 	page = e.page
 	my_id = int(e.control.data)
 	c = conn.cursor()
-	c.execute("SELECT * FROM invoices WHERE id=?", (my_id, ))
+	c.execute("SELECT * FROM invoice WHERE id=?", (my_id, ))
 	invoice = list(c.fetchone())
 	get_invoice(invoice)
 	bill.rows.clear()
@@ -148,7 +148,7 @@ def show_detail(e):
 def calldb():
 	create_table()
 	c = conn.cursor()
-	c.execute("SELECT * FROM invoices")
+	c.execute("SELECT * FROM invoice")
 	invoices = c.fetchall()
 	if not invoices == "":
 		keys = ['id', 'client_id', 'invoice_date', 'invoice_subtotal', 'invoice_total', 'invoice_tax', 'bank_reference', 'invoice_lines']

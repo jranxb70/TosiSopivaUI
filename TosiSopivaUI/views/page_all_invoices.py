@@ -26,7 +26,7 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO invoices (client_id,invoice_date, invoice_subtotal, invoice_total, invoice_tax, bank_reference, invoice_lines) VALUES(?,?,?,?,?,?,?)",
+			c.execute("INSERT INTO invoice (client_id,invoice_date, invoice_subtotal, invoice_total, invoice_tax, bank_reference, invoice_lines) VALUES(?,?,?,?,?,?,?)",
              (client_id.value,invoice_date.value,invoice_subtotal.value, invoice_total.value, invoice_tax.value, bank_reference.value, invoice_lines.value))
 			conn.commit()
 

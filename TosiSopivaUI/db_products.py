@@ -16,7 +16,7 @@ def showdelete(e):
 	try:
 		myid = int(e.control.data)
 		c = conn.cursor()
-		c.execute("DELETE FROM products WHERE id=?", (myid,))
+		c.execute("DELETE FROM product WHERE id=?", (myid,))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -46,7 +46,7 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-		c.execute("UPDATE products SET name=?, quantity=?, price=? WHERE id=?", (name_edit.value, quantity_edit.value, price_edit.value, myid))
+		c.execute("UPDATE product SET name=?, quantity=?, price=? WHERE id=?", (name_edit.value, quantity_edit.value, price_edit.value, myid))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -82,7 +82,7 @@ def showedit(e):
  
 def create_table():
 	c = conn.cursor()
-	c.execute("""CREATE TABLE IF NOT EXISTS products(
+	c.execute("""CREATE TABLE IF NOT EXISTS product(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT,
 		quantity INTEGER,
@@ -93,7 +93,7 @@ def create_table():
 def calldb():
 	create_table()
 	c = conn.cursor()
-	c.execute("SELECT * FROM products")
+	c.execute("SELECT * FROM product")
 	products = c.fetchall()
 	if not products == "":
 		keys = ['id', 'name', 'quantity', 'price']
