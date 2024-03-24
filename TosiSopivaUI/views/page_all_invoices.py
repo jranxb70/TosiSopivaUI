@@ -50,7 +50,6 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-
 	client_id = TextField(label="client_id")
 	invoice_date = TextField(label="invoice_date")
 	invoice_subtotal = TextField(label="invoice_subtotal")
