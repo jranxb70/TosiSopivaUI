@@ -23,7 +23,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO product (name,quantity,price) VALUES(?,?,?)",(name.value,quantity.value,price.value))
+			c.execute("INSERT INTO product (category_id,trade_name,product_description) VALUES(?,?,?)",(category_id.value,trade_name.value,product_description.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -34,9 +34,9 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 				Text("Saved"),)
 			page.snack_bar.open = True
    
-			name.value =''
-			quantity.value =''
-			price.value =''
+			category_id.value =''
+			trade_name.value =''
+			product_description.value =''
    
 			# REFRESH TABLE
 			tb.rows.clear()
@@ -48,17 +48,9 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-	name = TextField(label="name")
-	quantity = TextField(label="quantity", input_filter=ft.InputFilter(
-            allow=True,
-            regex_string=r"[0-9]",
-            replacement_string="",
-        )) 
-	price = TextField(label="price", input_filter=ft.InputFilter(
-            allow=True,
-            regex_string=r"[0-9,.]",
-            replacement_string="",
-        ))
+	category_id = TextField(label="category id")
+	trade_name = TextField(label="trade name")
+	product_description = TextField(label="product_description")
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -74,9 +66,9 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 				on_click=hidecon
 					),
 					]),
-				name,
-				quantity,
-				price,
+				category_id,
+				trade_name,
+				product_description,
 				FilledButton("Save",
 				on_click=savedata)
 			])

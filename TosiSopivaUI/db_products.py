@@ -4,9 +4,9 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
-		DataColumn(Text("name")),
-		DataColumn(Text("quantity")),
-		DataColumn(Text("price")),
+		DataColumn(Text("Category")),
+		DataColumn(Text("Name")),
+		DataColumn(Text("Description")),
     	DataColumn(Text("actions")),
 	],
 	rows=[]
@@ -26,17 +26,9 @@ def showdelete(e):
 		print(e)
 
 id_edit = Text()
-name_edit = TextField(label="name")
-quantity_edit = TextField(label="quantity", input_filter=InputFilter(
-            allow=True,
-            regex_string=r"[0-9]",
-            replacement_string="",
-        ))
-price_edit = TextField(label="price", input_filter=InputFilter(
-            allow=True,
-            regex_string=r"[0-9,.]",
-            replacement_string="",
-        ))
+category_id_edit = TextField(label="name")
+trade_name_edit = TextField(label="name")
+product_description_edit = TextField(label="name")
 
 def hidedlg(e):
 	dlg.visible = False
@@ -46,7 +38,7 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-		c.execute("UPDATE product SET name=?, quantity=?, price=? WHERE id=?", (name_edit.value, quantity_edit.value, price_edit.value, myid))
+		c.execute("UPDATE product SET category_id=?, trade_name=?, product_description=? WHERE id=?", (category_id_edit.value, trade_name_edit.value, product_description_edit.value, myid))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -63,9 +55,9 @@ dlg = Container(
 				Text("Edit Form",size=30,weight="bold"),
 				IconButton(icon="close",on_click=hidedlg),
 					],alignment="spaceBetween"),
-				name_edit,
-				quantity_edit,
-				price_edit,
+				category_id_edit,
+				trade_name_edit,
+				product_description_edit,
 				ElevatedButton("Update",on_click=updateandsave)
 				])
 )
@@ -73,9 +65,9 @@ dlg = Container(
 def showedit(e):
 	data_edit = e.control.data
 	id_edit.value = data_edit['id']
-	name_edit.value = data_edit['name']
-	quantity_edit.value = data_edit['quantity']
-	price_edit.value = data_edit['price']
+	category_id_edit.value = data_edit['category_id']
+	trade_name_edit.value = data_edit['trade_name']
+	product_description_edit.value = data_edit['product_description']
 
 	dlg.visible = True
 	dlg.update()
@@ -84,9 +76,9 @@ def create_table():
 	c = conn.cursor()
 	c.execute("""CREATE TABLE IF NOT EXISTS product(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT,
-		quantity INTEGER,
-		price INTEGER)
+		category_id INTEGER,
+		trade_name TEXT,
+		product_description TEXT)
 		""")
 	conn.commit()
 
@@ -96,15 +88,15 @@ def calldb():
 	c.execute("SELECT * FROM product")
 	products = c.fetchall()
 	if not products == "":
-		keys = ['id', 'name', 'quantity', 'price']
+		keys = ['id', 'category_id', 'trade_name', 'product_description']
 		result = [dict(zip(keys, values)) for values in products]
 		for x in result:
 			tb.rows.append(
 				DataRow(
                     cells=[
-                        DataCell(Text(x['name'])),
-                        DataCell(Text(x['quantity'])),
-                        DataCell(Text(x['price'])),
+                        DataCell(Text(x['category_id'])),
+                        DataCell(Text(x['trade_name'])),
+                        DataCell(Text(x['product_description'])),
                         DataCell(Row([
                         	IconButton(icon="EDIT",icon_color="blue",
                         		data=x,
