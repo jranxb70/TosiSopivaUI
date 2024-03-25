@@ -33,6 +33,13 @@ def page_all_companies(page: ft.Page, params: Params, basket: Basket):
 			page.snack_bar = SnackBar(
 				Text("Saved"),)
 			page.snack_bar.open = True
+
+			name.value =''
+			address.value =''
+			zip.value =''
+			city.value =''
+			phone.value =''
+			business_id.value =''
    
 			# REFRESH TABLE
 			tb.rows.clear()

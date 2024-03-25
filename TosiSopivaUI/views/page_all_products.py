@@ -34,6 +34,10 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 				Text("Saved"),)
 			page.snack_bar.open = True
    
+			name.value =''
+			quantity.value =''
+			price.value =''
+   
 			# REFRESH TABLE
 			tb.rows.clear()
 			calldb()

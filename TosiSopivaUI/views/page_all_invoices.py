@@ -38,6 +38,14 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 				Text("Saved"),
 				)
 			page.snack_bar.open = True
+   
+			client_id.value = ''
+			invoice_date.value = ''
+			invoice_subtotal.value = ''
+			invoice_total.value = ''
+			invoice_tax.value = ''
+			bank_reference.value = ''
+			invoice_lines.value = ''
 
 			# REFRESH TABLE
 			tb.rows.clear()
