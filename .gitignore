@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /TosiSopivaUI/error_log.txt
 /TosiSopivaUI/invoice_data.json
 /TosiSopivaUI/env
+invoice.db
