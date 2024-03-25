@@ -25,7 +25,8 @@ class DBEngineWrapper():
         if ctypes.sizeof(ctypes.c_void_p) == 4:
             DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
-            DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            #DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
 
     @staticmethod
     def get_dll():
@@ -92,8 +93,10 @@ class DBEngineWrapper():
         queryCustomers.argtypes = []        
         json_data_ptr = ctypes.c_char_p()
         error_list_ptr = ctypes.POINTER(node_t)()        
-        
-        queryCustomers(ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+        try:
+            queryCustomers(ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+        except Exception:
+            pass        
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
@@ -186,7 +189,7 @@ class DBEngineWrapper():
 
         # Call the C function with the JSON data
         value = addNewInvoiceData(enc, l)
-        return value        
+        return value
 
     def query_invoice_by_id(self, invoice_id):
         queryInvoiceById = DBEngineWrapper.get_dll().queryInvoiceById

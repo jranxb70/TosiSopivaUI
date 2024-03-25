@@ -1,3 +1,31 @@
+import flet as ft
+from flet import *
+from flet_route import Routing, path
+from views.home import Home
+from views.page_reg import page_reg
+from views.page_auth import page_auth
+from views.page_all_clients import page_all_clients
+from views.page_all_products import page_all_products
+from views.temp_nav import temp_nav
+
+def main(page: ft.Page):
+    app_routes = [
+        
+        path(url="/", clear= True,view=Home),
+        path(url="/page_reg",clear= True, view=page_reg),
+        path(url="/page_auth",clear= True, view=page_auth),
+        path(url="/page_all_clients",clear= True, view=page_all_clients),
+        path(url="/page_all_products",clear= True, view=page_all_products),
+        path(url="/temp_nav",clear= True, view=temp_nav),
+    ]
+    
+    Routing(page=page, app_routes=app_routes)
+  
+    
+    page.go(page.route)
+    
+#if __name__ == '__main__':
+    #ft.app(target=main)
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 
@@ -110,7 +138,7 @@ class Application(tk.Tk):
     def query_customers(self):
         engine = self.engine        
         customer_data = engine.queryCustomers()
-        return customer_data         
+        return customer_data  
 
     def query_invoice_by_id(self, invoice_id):
         engine = self.engine                      
@@ -179,5 +207,5 @@ class Application(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
+     app = Application()
+     app.mainloop()
