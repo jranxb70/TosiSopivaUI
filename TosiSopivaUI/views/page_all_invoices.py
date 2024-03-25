@@ -26,8 +26,8 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO invoice (client_id,invoice_date, invoice_subtotal, invoice_total, invoice_tax, bank_reference, invoice_lines) VALUES(?,?,?,?,?,?,?)",
-             (client_id.value,invoice_date.value,invoice_subtotal.value, invoice_total.value, invoice_tax.value, bank_reference.value, invoice_lines.value))
+			c.execute("INSERT INTO invoice (customer_id, invoice_date, invoice_bankreference, invoice_subtotal, invoice_tax, invoice_total, invoice_due_date) VALUES(?,?,?,?,?,?,?)",
+             (customer_id.value, date.value, bank_reference.value, subtotal.value, tax.value, total.value, due_date.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -39,13 +39,13 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 				)
 			page.snack_bar.open = True
    
-			client_id.value = ''
-			invoice_date.value = ''
-			invoice_subtotal.value = ''
-			invoice_total.value = ''
-			invoice_tax.value = ''
+			customer_id.value = ''
+			date.value = ''
 			bank_reference.value = ''
-			invoice_lines.value = ''
+			subtotal.value = ''
+			tax.value = ''
+			total.value = ''
+			due_date.value = ''
 
 			# REFRESH TABLE
 			tb.rows.clear()
@@ -58,13 +58,14 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-	client_id = TextField(label="client_id")
-	invoice_date = TextField(label="invoice_date")
-	invoice_subtotal = TextField(label="invoice_subtotal")
-	invoice_total = TextField(label="invoice_total")
-	invoice_tax = TextField(label="invoice_tax")
-	bank_reference = TextField(label="bank_reference")
-	invoice_lines = TextField(label="invoice_lines")
+	customer_id = TextField(label="customer id")
+	date = TextField(label="invoice date")
+	bank_reference = TextField(label="bank reference")
+	subtotal = TextField(label="invoice subtotal")
+	tax = TextField(label="invoice tax")
+	total = TextField(label="invoice total")
+	due_date = TextField(label="due date")
+
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -80,13 +81,13 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 				on_click=hidecon
 					),
 					]),
-				client_id,
-				invoice_date,
-				invoice_subtotal,
-                invoice_total,
-                invoice_tax,
-                bank_reference,
-                invoice_lines,
+				customer_id,
+				date,
+				bank_reference,
+				subtotal,
+                tax,
+                total,
+                due_date,
 				FilledButton("Save",
 				on_click=savedata
 					)

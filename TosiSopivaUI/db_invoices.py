@@ -8,13 +8,13 @@ def create_table():
 	c = conn.cursor()
 	c.execute("""CREATE TABLE IF NOT EXISTS invoice(
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        client_id INTEGER,
+        customer_id INTEGER,
 		invoice_date DATE,
+		invoice_bankreference TEXT,
 		invoice_subtotal REAL,
-		invoice_total REAL,
 		invoice_tax REAL,
-		bank_reference TEXT,
-        invoice_lines TEXT)
+  		invoice_total REAL,
+		invoice_due_date DATE)
 		""")
 	conn.commit()
 
@@ -23,11 +23,12 @@ tb = DataTable(
      	DataColumn(Text("id")),
 		DataColumn(Text("Client")),
 		DataColumn(Text("Date")),
-		DataColumn(Text("Subtotal")),
-		DataColumn(Text("Total")),
-		DataColumn(Text("Tax")),
 		DataColumn(Text("Bank reference")),
-		DataColumn(Text("invoice_lines")),
+		DataColumn(Text("Subotal")),
+		DataColumn(Text("Tax")),
+		DataColumn(Text("Total")),
+		DataColumn(Text("Due date")),
+		DataColumn(Text("Show")),
     	DataColumn(Text("Actions")),
 	],
 	rows=[]
@@ -47,13 +48,13 @@ def showdelete(e):
 		print(e)
 
 id_edit = Text()
-client_id = TextField(label="client_id")
-invoice_date = TextField(label="invoice_date")
-invoice_subtotal = TextField(label="invoice_subtotal")
-invoice_total = TextField(label="invoice_total")
-invoice_tax = TextField(label="invoice_tax") 
-bank_reference = TextField(label="bank_reference") 
-invoice_lines = TextField(label="invoice_lines") 
+customer_id = TextField(label="customer id")
+date = TextField(label="invoice date")
+bank_reference = TextField(label="bank reference")
+subtotal = TextField(label="subtotal")
+tax = TextField(label="tax") 
+total = TextField(label="total") 
+due_date = TextField(label="due date")
 
 def hidedlg(e):
 	dlg.visible = False
@@ -63,8 +64,8 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-		c.execute("UPDATE invoice SET client_id=?, invoice_date=?, invoice_subtotal=?, invoice_total=?, invoice_tax=?, bank_reference=?, invoice_lines=? WHERE id=?",
-            (client_id.value,invoice_date.value,invoice_subtotal.value, invoice_total.value, invoice_tax.value, bank_reference.value, invoice_lines.value, myid))
+		c.execute("UPDATE invoice SET customer_id=?, invoice_date=?, invoice_bankreference=?, invoice_subtotal=?, invoice_tax=?, invoice_total=?, invoice_due_date=? WHERE id=?",
+            (customer_id.value, date.value, bank_reference.value, subtotal.value, tax.value, total.value, due_date.value,  myid))
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -81,13 +82,13 @@ dlg = Container(
 				Text("Edit Form",size=30,weight="bold"),
 				IconButton(icon="close",on_click=hidedlg),
 					],alignment="spaceBetween"),
-				client_id,
-				invoice_date,
-				invoice_subtotal,
-				invoice_total,
-				invoice_tax,
-                bank_reference,
-                invoice_lines,
+				customer_id,
+				date,
+				bank_reference,
+				subtotal,
+				tax,
+                total,
+                due_date,
 				ElevatedButton("Update",on_click=updateandsave)
 				])
 )
@@ -95,13 +96,13 @@ dlg = Container(
 def showedit(e):
 	data_edit = e.control.data
 	id_edit.value = data_edit['id']
-	client_id.value = data_edit['client_id']
-	invoice_date.value = data_edit['invoice_date']
-	invoice_subtotal.value = data_edit['invoice_subtotal']
-	invoice_total.value = data_edit['invoice_total']
-	invoice_tax.value = data_edit['invoice_tax']
-	bank_reference.value = data_edit['bank_reference']
-	invoice_lines.value = data_edit['invoice_lines']
+	customer_id.value = data_edit['customer_id']
+	date.value = data_edit['invoice_date']
+	bank_reference.value = data_edit['invoice_bankreference']
+	subtotal.value = data_edit['invoice_subtotal']
+	tax.value = data_edit['invoice_tax']
+	total.value = data_edit['invoice_total']
+	due_date.value = data_edit['invoice_due_date']
 
 	dlg.visible = True
 	dlg.update()
@@ -111,11 +112,11 @@ bill = DataTable(
      	DataColumn(Text("id")),
 		DataColumn(Text("Client")),
 		DataColumn(Text("Date")),
-		DataColumn(Text("Subtotal")),
-		DataColumn(Text("Total")),
-		DataColumn(Text("Tax")),
 		DataColumn(Text("Bank reference")),
-		DataColumn(Text("invoice_lines")),
+		DataColumn(Text("Subtotal")),
+		DataColumn(Text("Tax")),
+		DataColumn(Text("Total")),
+		DataColumn(Text("Due date")),
 	],
 	rows=[]
 	)
@@ -151,19 +152,20 @@ def calldb():
 	c.execute("SELECT * FROM invoice")
 	invoices = c.fetchall()
 	if not invoices == "":
-		keys = ['id', 'client_id', 'invoice_date', 'invoice_subtotal', 'invoice_total', 'invoice_tax', 'bank_reference', 'invoice_lines']
+		keys = ['id', 'customer_id', 'invoice_date', 'invoice_bankreference', 'invoice_subtotal', 'invoice_tax', 'invoice_total', 'invoice_due_date']
 		result = [dict(zip(keys, values)) for values in invoices]
 		for x in result:
 			tb.rows.append(
 				DataRow(
                     cells=[
                         DataCell(Text(x['id'])),
-                        DataCell(Text(x['client_id'])),
+                        DataCell(Text(x['customer_id'])),
                         DataCell(Text(x['invoice_date'])),
+                        DataCell(Text(x['invoice_bankreference'])),
                         DataCell(Text(x['invoice_subtotal'])),
-                        DataCell(Text(x['invoice_total'])),
                         DataCell(Text(x['invoice_tax'])),
-                        DataCell(Text(x['bank_reference'])),
+                        DataCell(Text(x['invoice_total'])),
+                        DataCell(Text(x['invoice_due_date'])),
                         DataCell(IconButton(icon="REQUEST_PAGE",icon_color="blue",
                         		data=x['id'],
                         		on_click=show_detail
