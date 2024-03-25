@@ -16,6 +16,7 @@ def page_cabinet(page: ft.Page, params: Params, basket: Basket):
             ElevatedButton(text='Products Categories', on_click=lambda _:page.go('/page_product_category')),
             ElevatedButton(text='Companies', on_click=lambda _:page.go('/page_all_companies')),
             ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),
+            ElevatedButton(text='Variations', on_click=lambda _:page.go('/page_all_variations')),
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,
