@@ -16,7 +16,6 @@ def get_customer():
     c.execute("SELECT * FROM customer WHERE id=?", (global_bill[1], ))
     global global_customer
     global_customer = list(c.fetchone())
-    print(global_customer)
     conn.commit()
     
 
