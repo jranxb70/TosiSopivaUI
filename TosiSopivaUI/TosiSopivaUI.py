@@ -13,6 +13,7 @@ from views.page_all_companies import page_all_companies
 from views.page_product_category import page_product_category
 from views.page_all_variations import page_all_variations
 from views.page_var_options import page_var_options
+from views.page_product_item import page_product_item
 from views.cabinet import page_cabinet
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
@@ -32,6 +33,7 @@ def main(page: ft.Page):
         path(url="/page_product_category",clear= True, view=page_product_category),
         path(url="/page_all_variations",clear= True, view=page_all_variations),
         path(url="/page_var_options",clear= True, view=page_var_options),
+        path(url="/page_product_item",clear= True, view=page_product_item),
     ]
     
     Routing(page=page, app_routes=app_routes)
