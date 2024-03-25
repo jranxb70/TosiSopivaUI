@@ -122,10 +122,10 @@ class DBEngineWrapper():
         free_sql_error_details()   
         return json_dict       
 
-    def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city):
+    def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email):
 
         addCustomer = DBEngineWrapper.get_dll().addCustomer
-        addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
+        addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
         addCustomer.restype = None
 
         customer_id = ctypes.c_int()  
@@ -135,8 +135,10 @@ class DBEngineWrapper():
         customer_address = customer_address.encode("utf-8")
         customer_zip = customer_zip.encode("utf-8")
         customer_city = customer_city.encode("utf-8")
+        customer_phone = customer_phone.encode("utf-8")
+        customer_email = customer_email.encode("utf-8")
 
-        addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_id)
+        addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_id, customer_phone, customer_email)
         return customer_id.value
 
     def addNewInvoice(self, **kwargs):

@@ -199,10 +199,10 @@ class Application(tk.Tk):
 
         return engine.addNewInvoice(customer_id=customer_id, invoice_date=formatted_timestamp, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_lines=invoice_lines)          
 
-    def add_customer(self, first_name, last_name, address, zip, city):
+    def add_customer(self, first_name, last_name, address, zip, city, phone, email):
         engine = self.engine
 
-        customer_id = engine.addCustomer(first_name, last_name, address, zip, city)    
+        customer_id = engine.addCustomer(first_name, last_name, address, zip, city, phone, email)    
         return customer_id                                
 
 
