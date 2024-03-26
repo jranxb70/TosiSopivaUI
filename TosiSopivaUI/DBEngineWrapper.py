@@ -138,13 +138,13 @@ class DBEngineWrapper():
         customer_phone = customer_phone.encode("utf-8")
         customer_email = customer_email.encode("utf-8")
 
-        addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_id, customer_phone, customer_email)
+        addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email, customer_id)
         return customer_id.value
 
     def addNewInvoice(self, **kwargs):
 
         # Define the required keys
-        required_keys = ["customer_id", "invoice_date", "invoice_subtotal", "invoice_total", "invoice_tax", "bank_reference", "invoice_lines"]
+        required_keys = ["customer_id", "invoice_date", "invoice_subtotal", "invoice_total", "invoice_tax", "bank_reference", "invoice_due_date", "invoice_lines"]
 
         # Check if all required keys are present
         for key in required_keys:
@@ -160,7 +160,7 @@ class DBEngineWrapper():
             raise ValueError("invoice_lines must contain at least one item")
 
         for item in invoice_lines:
-            required_item_keys = ["product_name", "quantity", "price"]
+            required_item_keys = ["product_item_id", "quantity", "price", "product_description"]
             for item_key in required_item_keys:
                 if item_key not in item:
                     raise ValueError(f"Missing required key in invoice_lines item: {item_key}")
@@ -173,6 +173,7 @@ class DBEngineWrapper():
             "invoice_total": None,
             "invoice_tax": None,
             "bank_reference": "",
+            "invoice_due_date": "",            
             "invoice_lines": []
         }
 

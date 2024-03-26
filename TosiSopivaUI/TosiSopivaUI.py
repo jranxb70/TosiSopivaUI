@@ -109,7 +109,7 @@ class Application(tk.Tk):
 
         customers = self.query_customers()  
         
-        customer_id = self.add_customer("Pasi", "Männistö", "Pajuluomantie 4", "60100", "Seinäjoki")
+        customer_id = self.add_customer("Pasi", "Männistö", "Pajuluomantie 4", "60100", "Seinäjoki", "964-120229", "pasi.mannisto@geramail.com")
 
         customer_data = self.query_customer(customer_id)
 
@@ -177,12 +177,18 @@ class Application(tk.Tk):
         
         print(f"Modified timestamp: {formatted_timestamp}")        
 
-        product_name = "product_name"
+        product_item_id = "product_item_id"
+        #product_name = "product_name"
         quantity = "quantity"
         price = "price"
-        productname = "Ale"
+
+        product_description = "product_description"
+        productDescription  = "Olut Ale 0,33l 4,3%"
+        
+        #productname = "Ale"
+        productItemId = 2        
         product_quantity = 10
-        product_price = 2.50                    
+        product_price = 2.50                   
 
         invoice_tax_percent = 0.25 + 1      
         invoice_subtotal = product_quantity * product_price
@@ -193,11 +199,14 @@ class Application(tk.Tk):
         bankreference = bankreference + customer_id   
         
         bank_reference = f"{BankReferenceCalc.calc_new_reference(bankreference)}"
+
+        invoice_due_date = "2024-04-10"#formatted_timestamp""
+        
         invoice_lines = []
 
-        invoice_lines.append({f"{product_name}": productname, f"{quantity}": product_quantity, f"{price}": product_price})
+        invoice_lines.append({f"{product_item_id}": productItemId, f"{quantity}": product_quantity, f"{price}": product_price, f"{product_description}": productDescription})
 
-        return engine.addNewInvoice(customer_id=customer_id, invoice_date=formatted_timestamp, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_lines=invoice_lines)          
+        return engine.addNewInvoice(customer_id=customer_id, invoice_date=formatted_timestamp, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_due_date=invoice_due_date, invoice_lines=invoice_lines)          
 
     def add_customer(self, first_name, last_name, address, zip, city, phone, email):
         engine = self.engine
