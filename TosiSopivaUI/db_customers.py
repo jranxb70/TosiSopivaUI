@@ -3,9 +3,12 @@ from flet import *
 import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
+
 tb = DataTable(
-	columns=[
-		# DataColumn(Text("ID")),
+	columns=[Column(scroll="always"),
+		DataColumn(Text("ID")),
 		DataColumn(Text("First name")),
 		DataColumn(Text("Last name")),
 		DataColumn(Text("Address")),
@@ -68,6 +71,7 @@ def updateandsave(e):
 
 dlg = Container(
 	padding=10,
+	top = 10,
 			content=Column([
 				Row([
 				Text("Edit Form",size=30,weight="bold"),
@@ -86,7 +90,7 @@ dlg = Container(
 
 def showedit(e):
 	data_edit = e.control.data
-	id_edit.value = data_edit['id']
+	id_edit.value = data_edit['customer_id']
 	firstname_edit.value = data_edit['firstname']
 	lastname_edit.value = data_edit['lastname']
 	address_edit.value = data_edit['address']
@@ -98,45 +102,60 @@ def showedit(e):
 	dlg.visible = True
 	dlg.update()
  
-def create_table():
-	c = conn.cursor()
-	c.execute("""CREATE TABLE IF NOT EXISTS customer(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		firstname  TEXT,
-		lastname	TEXT,
-		address	TEXT,
-		zip        INTEGER,
-		city       TEXT,
-  		phone      TEXT,
-    	email     TEXT)
-		""")
-	conn.commit()
+# def create_table():
+# 	c = conn.cursor()
+# 	c.execute("""CREATE TABLE IF NOT EXISTS customer(
+# 		id INTEGER PRIMARY KEY AUTOINCREMENT,
+# 		firstname  TEXT,
+# 		lastname	TEXT,
+# 		address	TEXT,
+# 		zip        INTEGER,
+# 		city       TEXT,
+#   		phone      TEXT,
+#     	email     TEXT)
+# 		""")
+# 	conn.commit()
 
 def calldb():
-	create_table()
-	c = conn.cursor()
-	c.execute("SELECT * FROM customer")
-	clients = c.fetchall()
+	# create_table()
+	# c = conn.cursor()
+	# c.execute("SELECT * FROM customer")
+	# clients = c.fetchall()
+	# clients = engine.getCustomer(1)
+	clients = engine.queryCustomers()
+	# print(clients)
+	# print(clients['customers'][1]['first_name'])
+	# print(clients['customer_id'])
 	if not clients == "":
-		keys = ['id', 'firstname', 'lastname', 'address', 'zip', 'city', 'phone', 'email']
-		result = [dict(zip(keys, values)) for values in clients]
-		for x in result:
+		# for customer in clients['customers']:
+		# 	print("Customer ID:", customer['customer_id'])
+		# 	print("Name:", customer['first_name'], customer['last_name'])
+		# 	print("Address:", customer['address'])
+		# 	print("City:", customer['city'])
+		# 	print("Zip Code:", customer['zip'])
+		# 	print("Phone:", customer['phone'])
+		# 	print("Email:", customer['email'])
+		# 	print()
+		# keys = ['id', 'firstname', 'lastname', 'address', 'zip', 'city', 'phone', 'email']
+		# result = [dict(zip(keys, values)) for values in clients]
+		for customer in clients['customers']:
 			tb.rows.append(
 				DataRow(cells=[        
-                  DataCell(Text(x['firstname'])),
-                  DataCell(Text(x['lastname'])),
-                  DataCell(Text(x['address'])),
-                  DataCell(Text(x['zip'])),
-                  DataCell(Text(x['city'])),
-                  DataCell(Text(x['phone'])),
-                  DataCell(Text(x['email'])),
+                  DataCell(Text(customer['customer_id'])),
+                  DataCell(Text(customer['first_name'])),
+                  DataCell(Text(customer['last_name'])),
+                  DataCell(Text(customer['address'])),
+                  DataCell(Text(customer['city'])),
+                  DataCell(Text(customer['zip'])),
+                  DataCell(Text(customer['phone'])),
+                  DataCell(Text(customer['email'])),
                   DataCell(Row([
                     IconButton(icon="EDIT",icon_color="blue",
-                         		data=x,
+                         		data=customer['customer_id'],
                         		on_click=showedit
                  		),
                    	IconButton(icon="delete",icon_color="red",
-                       		data=x['id'],
+                       		data=customer['customer_id'],
                         	on_click=showdelete
                  		),
                  	])),

@@ -3,7 +3,7 @@ import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
-	columns=[
+	columns=[Column(scroll="always"),
 		DataColumn(Text("Parent category id")),
 		DataColumn(Text("Name")),
     	DataColumn(Text("Actions")),
