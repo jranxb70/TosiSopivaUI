@@ -3,7 +3,7 @@ import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
-	columns=[Column(scroll="always"),
+	columns=[
 		DataColumn(Text("Product ID")),
 		DataColumn(Text("SKU")),
 		DataColumn(Text("In stock")),

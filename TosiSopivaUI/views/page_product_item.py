@@ -83,6 +83,7 @@ def page_product_item(page: ft.Page, params: Params, basket: Basket):
 
 	return ft.View(
     	"/page_product_item",
+     	scroll = "always",
         
        	controls=[
             AppBar().build(),

@@ -98,6 +98,7 @@ def page_all_companies(page: ft.Page, params: Params, basket: Basket):
 
 	return ft.View(
     	"/page_all_companies",
+     	scroll = "always",
         
        	controls=[
             AppBar().build(),

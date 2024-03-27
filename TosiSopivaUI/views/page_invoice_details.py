@@ -13,6 +13,7 @@ def page_invoice_details(page: ft.Page, params: Params, basket: Basket):
     
     return ft.View(
     	"/page_invoice_details",
+        scroll = "always",
         
        	controls=[
         	AppBar().build(),

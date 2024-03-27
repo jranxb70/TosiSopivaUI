@@ -97,6 +97,7 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 
 	return ft.View(
     	"/page_all_invoices",
+     	scroll = "always",
         
        	controls=[
         	AppBar().build(),

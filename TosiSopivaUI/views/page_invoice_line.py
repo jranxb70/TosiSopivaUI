@@ -83,6 +83,7 @@ def page_invoice_line(page: ft.Page, params: Params, basket: Basket):
 
 	return ft.View(
     	"/page_invoice_line",
+     	scroll = "always",
         
        	controls=[
             AppBar().build(),

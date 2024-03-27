@@ -5,7 +5,7 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 # tb = Column(scroll="always")
 
 tb = DataTable(
-	columns=[Column(scroll="always"),
+	columns=[
 		DataColumn(Text("Category ID")),
 		DataColumn(Text("Name")),
     	DataColumn(Text("Actions")),

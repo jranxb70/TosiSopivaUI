@@ -74,6 +74,7 @@ def page_all_variations(page: ft.Page, params: Params, basket: Basket):
 
 	return ft.View( 
     	"/page_all_variations",
+     	scroll = "always",
         
        	controls=[
             AppBar().build(),

@@ -19,7 +19,7 @@ def create_table():
 	conn.commit()
 
 tb = DataTable(
-	columns=[Column(scroll="always"),
+	columns=[
      	DataColumn(Text("id")),
 		DataColumn(Text("Client")),
 		DataColumn(Text("Date")),
