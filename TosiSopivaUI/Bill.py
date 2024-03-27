@@ -4,6 +4,9 @@ from reportlab.pdfgen import canvas
 import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
+
 global_bill = []
 global_customer = []
 
@@ -12,10 +15,12 @@ def get_invoice(invoice):
     global_bill = invoice
     
 def get_customer():
-    c = conn.cursor()
-    c.execute("SELECT * FROM customer WHERE id=?", (global_bill[1], ))
+    # c = conn.cursor()
+    # c.execute("SELECT * FROM customer WHERE customer_id=?", (global_bill[1], ))
     global global_customer
-    global_customer = list(c.fetchone())
+    # global_customer = list(c.fetchone())
+    global_customer = engine.getCustomer(global_bill[1])
+    print(global_customer)
     conn.commit()
     
 
@@ -23,17 +28,17 @@ def generate_bill_pdf(filename):
     get_customer()
     c = canvas.Canvas(filename, pagesize=letter)
     c.drawString(300, 750, f"INVOICE {global_bill[0]}")
-    c.drawString(100, 730, f"Customer Name: {global_customer[1]}")
-    c.drawString(100, 710, f"Customer Surname: {global_customer[2]}")
-    c.drawString(100, 690, f"Address: {global_customer[3]}")
-    c.drawString(100, 670, f"Postal code: {global_customer[4]}")
-    c.drawString(100, 650, f"City: {global_customer[5]}")
-    c.drawString(100, 630, f"Phone: {global_customer[6]}")
-    c.drawString(100, 610, f"Email: {global_customer[7]}")
+    c.drawString(100, 730, f"Customer Name: {global_customer['customer_first_name']}")
+    c.drawString(100, 710, f"Customer Surname: {global_customer['customer_last_name']}")
+    c.drawString(100, 690, f"Address: {global_customer['customer_address']}")
+    c.drawString(100, 670, f"Postal code: {global_customer['customer_zip']}")
+    c.drawString(100, 650, f"City: {global_customer['customer_city']}")
+    c.drawString(100, 630, f"Phone: {global_customer['customer_phone']}")
+    c.drawString(100, 610, f"Email: {global_customer['customer_email']}")
     c.drawString(100, 590, "Items:")
     x = 570
     for i in range(5):
-        c.drawString(100, x, "Items:")
+        c.drawString(100, x, "Item:")
         x-=20
     y_position = 490
     y_position -= 20
