@@ -43,7 +43,6 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
               [
                 ft.Column(
                   [
-                    ft.Text('Login'),
                     user_login,
                     user_pass,
                     btn_auth,

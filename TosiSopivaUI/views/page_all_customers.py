@@ -4,8 +4,9 @@ from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
 from db_customers import mytable, tb, calldb
-import sqlite3
-conn = sqlite3.connect("invoice.db",check_same_thread=False)
+
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
 
 def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 
@@ -22,17 +23,15 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 	def savedata(e):
 		try:
 			# INPUT TO DATABASE
-			c = conn.cursor()
-			c.execute("INSERT INTO customer (firstname,lastname,address,zip,city, phone, email) VALUES(?,?,?,?,?,?,?)",(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value))
-			conn.commit()
+			engine.addCustomer(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value)
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
 			inputcon.offset = transform.Offset(2,0)
 
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
-			page.snack_bar = SnackBar(
-				Text("Saved"),)
+			page.snack_bar = SnackBar(Text("Saved"),)
 			page.snack_bar.open = True
+   
 			firstname.value =''
 			lastname.value =''
 			address.value =''
@@ -91,13 +90,14 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 				email,
 				FilledButton("Save",
 				on_click=savedata
-					)
+				)
 			])
 		)
 	)
 
 	return ft.View(
     	"/page_all_customers",
+       	scroll = "always",
         
        	controls=[
             AppBar().build(),
@@ -106,7 +106,7 @@ def page_all_customers(page: ft.Page, params: Params, basket: Basket):
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
-		inputcon 
+  		inputcon,
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,
