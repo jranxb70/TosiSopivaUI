@@ -26,6 +26,7 @@ class DBEngineWrapper():
             DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
             DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            # DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
 
     @staticmethod
     def get_dll():
@@ -44,7 +45,9 @@ class DBEngineWrapper():
         # Call the C function
         result = getCustomerCharOut(customer_id, ctypes.byref(json_data_ptr))
         
-        customer_data = json.loads(json_data_ptr.value.decode())
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
         release.argtypes = [ctypes.c_int]
         release.restype = ctypes.c_int
         tuppu = release(2)
@@ -90,8 +93,10 @@ class DBEngineWrapper():
         queryCustomers.argtypes = []        
         json_data_ptr = ctypes.c_char_p()
         error_list_ptr = ctypes.POINTER(node_t)()        
-        
-        queryCustomers(ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+        try:
+            queryCustomers(ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+        except Exception:
+            pass        
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
@@ -117,10 +122,10 @@ class DBEngineWrapper():
         free_sql_error_details()   
         return json_dict       
 
-    def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city):
+    def addCustomer(self, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email):
 
         addCustomer = DBEngineWrapper.get_dll().addCustomer
-        addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
+        addCustomer.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
         addCustomer.restype = None
 
         customer_id = ctypes.c_int()  
@@ -130,14 +135,31 @@ class DBEngineWrapper():
         customer_address = customer_address.encode("utf-8")
         customer_zip = customer_zip.encode("utf-8")
         customer_city = customer_city.encode("utf-8")
+        customer_phone = customer_phone.encode("utf-8")
+        customer_email = customer_email.encode("utf-8")
 
-        addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_id)
+        addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email, customer_id)
         return customer_id.value
+    
+    def updateCustomer(self, customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email):
+        updateCustomerFunc = DBEngineWrapper.get_dll().updateCustomer
+        updateCustomerFunc.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        updateCustomerFunc.restype = None
 
+        customer_firstName = customer_firstName.encode("utf-8")
+        customer_lastName = customer_lastName.encode("utf-8")
+        customer_address = customer_address.encode("utf-8")
+        customer_zip = customer_zip.encode("utf-8")
+        customer_city = customer_city.encode("utf-8")
+        customer_phone = customer_phone.encode("utf-8")
+        customer_email = customer_email.encode("utf-8")
+
+        updateCustomerFunc(customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email)
+        
     def addNewInvoice(self, **kwargs):
 
         # Define the required keys
-        required_keys = ["customer_id", "invoice_date", "invoice_subtotal", "invoice_total", "invoice_tax", "bank_reference", "invoice_lines"]
+        required_keys = ["customer_id", "invoice_date", "invoice_subtotal", "invoice_total", "invoice_tax", "bank_reference", "invoice_due_date", "invoice_lines"]
 
         # Check if all required keys are present
         for key in required_keys:
@@ -153,7 +175,7 @@ class DBEngineWrapper():
             raise ValueError("invoice_lines must contain at least one item")
 
         for item in invoice_lines:
-            required_item_keys = ["product_name", "quantity", "price"]
+            required_item_keys = ["product_item_id", "quantity", "price", "product_description"]
             for item_key in required_item_keys:
                 if item_key not in item:
                     raise ValueError(f"Missing required key in invoice_lines item: {item_key}")
@@ -166,6 +188,7 @@ class DBEngineWrapper():
             "invoice_total": None,
             "invoice_tax": None,
             "bank_reference": "",
+            "invoice_due_date": "",            
             "invoice_lines": []
         }
 
@@ -184,7 +207,7 @@ class DBEngineWrapper():
 
         # Call the C function with the JSON data
         value = addNewInvoiceData(enc, l)
-        return value        
+        return value
 
     def query_invoice_by_id(self, invoice_id):
         queryInvoiceById = DBEngineWrapper.get_dll().queryInvoiceById
@@ -222,4 +245,3 @@ class DBEngineWrapper():
         
         free_sql_error_details()   
         return json_dict                
-
