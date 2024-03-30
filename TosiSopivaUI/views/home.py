@@ -1,21 +1,33 @@
-import flet as ft
 from flet_route import Params, Basket
 from flet import *
 from views.app_bar import AppBar
 
-def Home(page: ft.Page, params: Params, basket: Basket):
-    reg_button = ft.OutlinedButton(text='Registration', width=200, on_click=lambda _:page.go('/page_reg'))
-    title_= ft.Text(value = 'Very Appropriate Billing', size=30)
-        
-    return ft.View(
-        "/",
-        
+def Home(page: Page, params: Params, basket: Basket):
+    imgcontainer = Container(
+        content = Image(src="bg.jpg", opacity=0.4),
+        padding=-10,
+        margin=0,
+    )
+    
+    body = Container(
+        Stack([
+            imgcontainer,
+            Column([
+                Container(height=400),
+                Row([
+                    FilledButton("START",
+                    style=ButtonStyle(shape=CircleBorder(),padding=30),
+                    on_click=lambda _:page.go('/page_reg'),
+            ),
+            ],alignment=MainAxisAlignment.CENTER,) 
+            ]),
+        ],)
+    )
+   
+    return View(
+        "/",        
        controls=[
             AppBar().build(),
-            title_,
-            reg_button,
+            body
         ],
-        vertical_alignment=MainAxisAlignment.CENTER,
-        horizontal_alignment=CrossAxisAlignment.CENTER,
-        spacing=26
     )
