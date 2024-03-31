@@ -2,6 +2,9 @@ from flet import *
 import sqlite3
 from Bill import get_invoice
 
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
+
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 def create_table():
@@ -151,7 +154,11 @@ def calldb():
 	c = conn.cursor()
 	c.execute("SELECT * FROM invoice")
 	invoices = c.fetchall()
+	# invoices = engine.query_invoice_by_id(1)
+	# print(invoices)
 	if not invoices == "":
+		# for key, value in invoices.items():
+			# print(f"{key}: {value}")
 		keys = ['id', 'customer_id', 'invoice_date', 'invoice_bankreference', 'invoice_subtotal', 'invoice_tax', 'invoice_total', 'invoice_due_date']
 		result = [dict(zip(keys, values)) for values in invoices]
 		for x in result:

@@ -24,9 +24,7 @@ tb = DataTable(
 def showdelete(e):
 	try:
 		myid = int(e.control.data)
-		c = conn.cursor()
-		c.execute("DELETE FROM customer WHERE id=?", (myid,))
-		conn.commit()
+		engine.deleteCustomer(myid)
 		tb.rows.clear()	
 		calldb()
 		tb.update()
