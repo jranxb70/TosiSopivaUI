@@ -3,23 +3,27 @@ from flet_route import Params, Basket
 from validate_email import validate_email
 import sqlite3
 from flet import * 
-from views.app_bar import AppBar   
+from views.app_bar import AppBar
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
 
 def page_reg(page: ft.Page, params: Params, basket: Basket):
-    
+
     def register(e):
-        db = sqlite3.connect('invoice.db')
+        print(user_login.value, user_pass.value, user_email.value)
+        engine.addDBUser(user_login.value, user_pass.value, user_email.value)
+        # db = sqlite3.connect('invoice.db')
         
-        cur = db.cursor()
-        cur.execute("""CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY,
-            login TEXT,
-            pass TEXT,
-            email TEXT
-        )""")
-        cur.execute(f"INSERT INTO users VALUES(NULL, '{user_login.value}', '{user_pass.value}', '{user_email.value}')")
-        db.commit()
-        db.close()
+        # cur = db.cursor()
+        # cur.execute("""CREATE TABLE IF NOT EXISTS users (
+        #     id INTEGER PRIMARY KEY,
+        #     login TEXT,
+        #     pass TEXT,
+        #     email TEXT
+        # )""")
+        # cur.execute(f"INSERT INTO users VALUES(NULL, '{user_login.value}', '{user_pass.value}', '{user_email.value}')")
+        # db.commit()
+        # db.close()
         if validate_email(user_email.value) == True:
           page.snack_bar = ft.SnackBar(ft.Text('Registered!'))
           page.snack_bar.open = True

@@ -30,8 +30,8 @@ class DBEngineWrapper():
 
     @staticmethod
     def get_dll():
-        return DBEngineWrapper._class_lib        
-
+        return DBEngineWrapper._class_lib
+    
     def getCustomer(self, customer_id):
         
         getCustomerCharOut = DBEngineWrapper.get_dll().getCustomerCharOut
@@ -53,6 +53,32 @@ class DBEngineWrapper():
         tuppu = release(2)
                                
         return customer_data
+    
+    def addDBUser(self,login, password, email):
+        addDBUserFunc = DBEngineWrapper.get_dll().addDBUser
+        addDBUserFunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        addDBUserFunc.restype = ctypes.c_int
+
+        # user_id = ctypes.c_int()
+        login_encoded = login.encode("utf-8")
+        password_encoded = password.encode("utf-8")
+        email_encoded = email.encode("utf-8")
+
+        result = addDBUserFunc(login_encoded, password_encoded, email_encoded)
+
+        return result
+    
+    def getDBUser(self, login, user_password):
+        getDBUserFunc = DBEngineWrapper.get_dll().getDBUser
+        getDBUserFunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+        getDBUserFunc.restype = ctypes.c_int
+
+        login_encoded = login.encode("utf-8")
+        password_encoded = user_password.encode("utf-8")
+
+        access = getDBUserFunc(login_encoded, password_encoded)
+
+        return access
 
     def queryInvoicesByCustomer(self, customer_id):
 

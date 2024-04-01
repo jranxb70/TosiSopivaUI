@@ -3,24 +3,34 @@ from flet_route import Params, Basket
 import sqlite3
 from flet import *
 from views.app_bar import AppBar
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
 
 def page_auth(page: ft.Page, params: Params, basket: Basket):
-        
+  
     def auth_user(e):
-        db = sqlite3.connect('invoice.db')
-        cur = db.cursor()
-
-        cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
-        if cur.fetchone() != None:
+        # db = sqlite3.connect('invoice.db')
+        # cur = db.cursor()
+        # cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
+        
+        result = engine.getDBUser(user_login.value, user_pass.value)
+        print(user_login.value, user_pass.value)
+        print(result)
+        
+        if result == 1:
             page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
             page.snack_bar.open = True
             page.go('/page_cabinet')
+        elif result == -3:
+            page.snack_bar = ft.SnackBar(ft.Text('No connection to database...'))
+            page.snack_bar.open = True
+            page.update()
         else:
             page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
             page.snack_bar.open = True
             page.update()
-        db.commit()
-        db.close()
+        # db.commit()
+        # db.close()
 
     def validate(e):
         if all([user_login.value, user_pass.value]):   
