@@ -23,9 +23,54 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="BankReferenceCalc.py" />
+    <Compile Include="Bill.py" />
     <Compile Include="DBEngineWrapper.py" />
+    <Compile Include="db_companies.py" />
+    <Compile Include="db_customers.py" />
+    <Compile Include="db_invoices.py" />
+    <Compile Include="db_invoice_line.py" />
+    <Compile Include="db_products.py" />
+    <Compile Include="db_prod_category.py" />
+    <Compile Include="db_prod_item.py" />
+    <Compile Include="db_variations.py" />
+    <Compile Include="db_var_options.py" />
     <Compile Include="DllUtility.py" />
+    <Compile Include="home.py" />
+    <Compile Include="page_all_clients.py" />
+    <Compile Include="page_all_products.py" />
+    <Compile Include="page_auth.py" />
+    <Compile Include="page_reg.py" />
+    <Compile Include="temp_nav.py" />
     <Compile Include="TosiSopivaUI.py" />
+    <Compile Include="views\app_bar.py" />
+    <Compile Include="views\cabinet.py" />
+    <Compile Include="views\home.py" />
+    <Compile Include="views\page_all_companies.py" />
+    <Compile Include="views\page_all_customers.py" />
+    <Compile Include="views\page_all_invoices.py" />
+    <Compile Include="views\page_all_products.py" />
+    <Compile Include="views\page_all_variations.py" />
+    <Compile Include="views\page_auth.py" />
+    <Compile Include="views\page_invoice_details.py" />
+    <Compile Include="views\page_invoice_line.py" />
+    <Compile Include="views\page_product_category.py" />
+    <Compile Include="views\page_product_item.py" />
+    <Compile Include="views\page_reg.py" />
+    <Compile Include="views\page_var_options.py" />
+    <Compile Include="views\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="views\" />
+    <Folder Include="views\__pycache__\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="views\__pycache__\home.cpython-312.pyc" />
+    <Content Include="views\__pycache__\page_all_clients.cpython-312.pyc" />
+    <Content Include="views\__pycache__\page_all_products.cpython-312.pyc" />
+    <Content Include="views\__pycache__\page_auth.cpython-312.pyc" />
+    <Content Include="views\__pycache__\page_reg.cpython-312.pyc" />
+    <Content Include="views\__pycache__\temp_nav.cpython-312.pyc" />
+    <Content Include="views\__pycache__\__init__.cpython-312.pyc" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
