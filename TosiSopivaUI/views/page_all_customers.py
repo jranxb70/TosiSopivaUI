@@ -1,17 +1,14 @@
 import flet as ft
 from flet import *
 from flet_route import Params, Basket
-
+from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-#from db_clients import mytable, tb, calldb
-#from db_create_all_tables import create_table_clients
-import sqlite3
-conn = sqlite3.connect("invoice.db",check_same_thread=False)
+from db_customers import mytable, tb, calldb
 
-def page_all_clients(page: ft.Page, params: Params, basket: Basket):
-    
-    # AND RUN SCRIPT FOR CREATE TABLE WHEN FLET FIRST RUN
-	create_table_clients()
+from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
+
+def page_all_customers(page: ft.Page, params: Params, basket: Basket):
 
 	page.scroll = "auto"
 
@@ -26,22 +23,22 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 	def savedata(e):
 		try:
 			# INPUT TO DATABASE
-			c = conn.cursor()
-			c.execute("INSERT INTO clients (name,surname,address,zip,city) VALUES(?,?,?,?,?)",(name.value,surname.value,address.value,zip.value,city.value))
-			conn.commit()
-			print("success")
+			engine.addCustomer(firstname.value,lastname.value,address.value,zip.value,city.value, phone.value, email.value)
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
 			inputcon.offset = transform.Offset(2,0)
 
 			# ADD SNACKBAR IF SUCCESS INPUT TO DATABASE
-
-			page.snack_bar = SnackBar(
-				Text("success INPUT"),
-				bgcolor="green"
-				)
-
+			page.snack_bar = SnackBar(Text("Saved"),)
 			page.snack_bar.open = True
+   
+			firstname.value =''
+			lastname.value =''
+			address.value =''
+			zip.value =''
+			city.value =''
+			phone.value =''
+			email.value =''
 
 			# REFRESH TABLE
 			tb.rows.clear()
@@ -54,12 +51,21 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-
-	name = TextField(label="name")
-	surname = TextField(label="surname")
+	firstname = TextField(label="firstname")
+	lastname = TextField(label="lastname")
 	address = TextField(label="address")
-	zip = TextField(label="zip")
+	zip = ft.TextField(label="zip",input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+        ))
 	city = TextField(label="city")
+	phone = TextField(label="phone", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9+]",
+            replacement_string="",
+        ))
+	email = TextField(label="email")
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -70,33 +76,37 @@ def page_all_clients(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new data",size=20,weight="bold"),
+				Text("Add new customer",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
 					]),
-				name,
-				surname,
+				firstname,
+				lastname,
 				address,
 				zip,
 				city,
-				FilledButton("save data",
+				phone,
+				email,
+				FilledButton("Save",
 				on_click=savedata
-					)
+				)
 			])
 		)
 	)
 
 	return ft.View(
-    	"/page_all_clients",
+    	"/page_all_customers",
+       	scroll = "always",
         
        	controls=[
-            Text("CLIENTS",size=30,weight="bold"),
+            AppBar().build(),
+            Text("CUSTOMERS",size=30,weight="bold"),
 			ElevatedButton("add new data", on_click=showInput),
-   			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/temp_nav')),
+   			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
-		inputcon 
+  		inputcon,
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,

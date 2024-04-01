@@ -3,11 +3,11 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-from db_products import mytable, tb, calldb
+from db_prod_category import mytable, tb, calldb
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
-def page_all_products(page: ft.Page, params: Params, basket: Basket):
+def page_product_category(page: ft.Page, params: Params, basket: Basket):
 
 	page.scroll = "auto"
 
@@ -23,7 +23,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO product (category_id,trade_name,product_description) VALUES(?,?,?)",(category_id.value,trade_name.value,product_description.value))
+			c.execute("INSERT INTO product_category (parent_category_id, name) VALUES(?,?)",(parent_category_id.value, name.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -34,9 +34,8 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 				Text("Saved"),)
 			page.snack_bar.open = True
    
-			category_id.value =''
-			trade_name.value =''
-			product_description.value =''
+			name.value =''
+			parent_category_id.value =''
    
 			# REFRESH TABLE
 			tb.rows.clear()
@@ -48,9 +47,8 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-	category_id = TextField(label="category id")
-	trade_name = TextField(label="trade name")
-	product_description = TextField(label="product_description")
+	parent_category_id = TextField(label="parent category id")
+	name = TextField(label="name")
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -61,14 +59,13 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new product",size=20,weight="bold"),
+				Text("Add new category",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
 					]),
-				category_id,
-				trade_name,
-				product_description,
+				name,
+				parent_category_id,
 				FilledButton("Save",
 				on_click=savedata)
 			])
@@ -76,13 +73,13 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 	)
 
 	return ft.View(
-    	"/page_all_products",
+    	"/page_product_category",
      	scroll = "always",
         
        	controls=[
             AppBar().build(),
-            Text("PRODUCTS",size=30,weight="bold"),
-			ElevatedButton("add new product", on_click=showInput),
+            Text("PRODUCT CATEGORY",size=30,weight="bold"),
+			ElevatedButton("add new category", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA

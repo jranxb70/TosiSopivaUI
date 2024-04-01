@@ -1,18 +1,33 @@
-import flet as ft
 from flet_route import Params, Basket
 from flet import *
+from views.app_bar import AppBar
 
-def Home(page: ft.Page, params: Params, basket: Basket):
-
-    return ft.View(
-        "/",
-        
+def Home(page: Page, params: Params, basket: Basket):
+    imgcontainer = Container(
+        content = Image(src="img/bg.jpg", opacity=0.4),
+        padding=-10,
+        margin=0,
+    )
+    
+    body = Container(
+        Stack([
+            imgcontainer,
+            Column([
+                Container(height=400),
+                Row([
+                    FilledButton("START",
+                    style=ButtonStyle(shape=CircleBorder(),padding=30),
+                    on_click=lambda _:page.go('/page_reg'),
+            ),
+            ],alignment=MainAxisAlignment.CENTER,) 
+            ]),
+        ],)
+    )
+   
+    return View(
+        "/",        
        controls=[
-            AppBar(title=Text('TosiSopivaLaskutus'), bgcolor='blue'),
-            Text(value='TosiSopivaLaskutus', size=30),
-            ElevatedButton(text='Registration', on_click=lambda _:page.go('/page_reg'))
+            AppBar().build(),
+            body
         ],
-        vertical_alignment=MainAxisAlignment.CENTER,
-        horizontal_alignment=CrossAxisAlignment.CENTER,
-        spacing=26
     )

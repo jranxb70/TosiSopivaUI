@@ -2,24 +2,59 @@ import flet as ft
 from flet_route import Params, Basket
 import sqlite3
 from flet import *
+#import imp
+from views.app_bar import AppBar
+
+from DBEngineWrapper import DBEngineWrapper
 
 def page_auth(page: ft.Page, params: Params, basket: Basket):
         
-    def auth_user(e):
+    def auth_userLocal(e):
         db = sqlite3.connect('invoice.db')
         cur = db.cursor()
 
         cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
         if cur.fetchone() != None:
-            Page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
-            Page.snack_bar.open = True
-            page.go('/temp_nav')
+            page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
+            page.snack_bar.open = True
+            page.go('/page_cabinet')
         else:
-            Page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
-            Page.snack_bar.open = True
+            page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
+            page.snack_bar.open = True
             page.update()
         db.commit()
         db.close()
+
+    def auth_userLocal(e):
+        db = sqlite3.connect('invoice.db')
+        cur = db.cursor()
+
+        cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
+        if cur.fetchone() != None:
+            page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
+            page.snack_bar.open = True
+            page.go('/page_cabinet')
+        else:
+            page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
+            page.snack_bar.open = True
+            page.update()
+        db.commit()
+        db.close()
+
+    def auth_user(e):
+        dbEngine = DBEngineWrapper()
+
+        ret = dbEngine.getDBUser(user_login.value, user_pass.value)
+ 
+        if ret == 1:
+            page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
+            page.snack_bar.open = True
+            page.go('/page_cabinet')
+        else:
+            page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
+            page.snack_bar.open = True
+            page.update()
+            
 
     def validate(e):
         if all([user_login.value, user_pass.value]):   
@@ -36,19 +71,19 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
         "/page_auth",
         
         controls = [
-            AppBar(title=Text('Login'), bgcolor='blue'),
+            AppBar().build(),
             Text(value='Login', size=30),
             ft.Row(
               [
                 ft.Column(
                   [
-                    ft.Text('Login'),
                     user_login,
                     user_pass,
                     btn_auth,
-                  ]
+                  ],horizontal_alignment=CrossAxisAlignment.CENTER,
                 )
-              ]
+              ],
+              alignment=ft.MainAxisAlignment.CENTER
             )
           ],
             vertical_alignment=MainAxisAlignment.CENTER,

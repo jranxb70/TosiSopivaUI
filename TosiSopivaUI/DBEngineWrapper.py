@@ -35,7 +35,7 @@ class DBEngineWrapper():
     def registerVeryConvenientUser(self, login, passwd, email):
         registerDBUser = DBEngineWrapper.get_dll().addDBUser
         registerDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
-        registerDBUser.restype = None
+        registerDBUser.restype = ctypes.c_int
 
         login = login.encode("utf-8")
         passwd = passwd.encode("utf-8")
@@ -43,8 +43,19 @@ class DBEngineWrapper():
 
         user_id = ctypes.c_int()  
 
-        registerDBUser(login, passwd, email, user_id)   
+        retCode = registerDBUser(login, passwd, email, user_id)   
+        return retCode
+
+    def getDBUser(self, login, password):
+        getDBUser = DBEngineWrapper.get_dll().getDBUser
+        getDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p]  
+        getDBUser.restype = ctypes.c_int  
+
+        login = login.encode("utf-8")
+        password = password.encode("utf-8")                    
     
+        retcode = getDBUser(login, password) 
+        return retcode                                    
 
 
     def getCustomer(self, customer_id):
@@ -178,7 +189,8 @@ class DBEngineWrapper():
         deleteCustomer.argtypes = [ctypes.c_int]
         deleteCustomer.restype = ctypes.c_int
 
-        deleteCustomer(customer_id)
+        ret = deleteCustomer(customer_id)
+        return ret        
 
     def addNewInvoice(self, **kwargs):
 

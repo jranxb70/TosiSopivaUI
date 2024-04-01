@@ -3,11 +3,11 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-from db_products import mytable, tb, calldb
+from db_companies import mytable, tb, calldb
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
-def page_all_products(page: ft.Page, params: Params, basket: Basket):
+def page_all_companies(page: ft.Page, params: Params, basket: Basket):
 
 	page.scroll = "auto"
 
@@ -23,7 +23,7 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO product (category_id,trade_name,product_description) VALUES(?,?,?)",(category_id.value,trade_name.value,product_description.value))
+			c.execute("INSERT INTO company(name, address, zip, city, phone, business_id) VALUES(?,?,?,?,?,?)",(name.value, address.value, zip.value, city.value, phone.value, business_id.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
@@ -33,10 +33,13 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 			page.snack_bar = SnackBar(
 				Text("Saved"),)
 			page.snack_bar.open = True
-   
-			category_id.value =''
-			trade_name.value =''
-			product_description.value =''
+
+			name.value =''
+			address.value =''
+			zip.value =''
+			city.value =''
+			phone.value =''
+			business_id.value =''
    
 			# REFRESH TABLE
 			tb.rows.clear()
@@ -48,9 +51,24 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 			print(e)
 
 	# CREATE FIELD FOR INPUT
-	category_id = TextField(label="category id")
-	trade_name = TextField(label="trade name")
-	product_description = TextField(label="product_description")
+	name = TextField(label="name")
+	address = TextField(label="address")
+	zip = TextField(label="zip", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+    ))
+	city = TextField(label="city")
+	phone = TextField(label="phone", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9+]",
+            replacement_string="",
+    ))
+	business_id = TextField(label="business_id", input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"[0-9]",
+            replacement_string="",
+    ))
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
 	inputcon = Card(
@@ -61,14 +79,17 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 		content=Container(
 			content=Column([
 				Row([
-				Text("Add new product",size=20,weight="bold"),
+				Text("Add new company",size=20,weight="bold"),
 				IconButton(icon="close",icon_size=30,
 				on_click=hidecon
 					),
 					]),
-				category_id,
-				trade_name,
-				product_description,
+				name,
+				address,
+				zip,
+                city,
+				phone,
+				business_id,
 				FilledButton("Save",
 				on_click=savedata)
 			])
@@ -76,13 +97,13 @@ def page_all_products(page: ft.Page, params: Params, basket: Basket):
 	)
 
 	return ft.View(
-    	"/page_all_products",
+    	"/page_all_companies",
      	scroll = "always",
         
        	controls=[
             AppBar().build(),
-            Text("PRODUCTS",size=30,weight="bold"),
-			ElevatedButton("add new product", on_click=showInput),
+            Text("COMPANIES",size=30,weight="bold"),
+			ElevatedButton("add new company", on_click=showInput),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
