@@ -30,20 +30,18 @@ class DBEngineWrapper():
 
     @staticmethod
     def get_dll():
-        return DBEngineWrapper._class_lib        
+        return DBEngineWrapper._class_lib
 
     def registerVeryConvenientUser(self, login, passwd, email):
         registerDBUser = DBEngineWrapper.get_dll().addDBUser
-        registerDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
+        registerDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
         registerDBUser.restype = ctypes.c_int
 
         login = login.encode("utf-8")
         passwd = passwd.encode("utf-8")
         email = email.encode("utf-8")
 
-        user_id = ctypes.c_int()  
-
-        retCode = registerDBUser(login, passwd, email, user_id)   
+        retCode = registerDBUser(login, passwd, email)   
         return retCode
 
     def getDBUser(self, login, password):
@@ -53,16 +51,46 @@ class DBEngineWrapper():
 
         login = login.encode("utf-8")
         password = password.encode("utf-8")                    
-    
+         
         retcode = getDBUser(login, password) 
-        return retcode                                    
+        return retcode
 
+    def selectAllInvoices(self, switch):                                 
+        selectAllInvoices = DBEngineWrapper.get_dll().queryAllInvoices
+        selectAllInvoices.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]    
+        selectAllInvoices.restype = None
+
+        # Create a pointer to a char buffer
+        json_data_ptr = ctypes.c_char_p()
+
+        selectAllInvoices(switch, ctypes.byref(json_data_ptr))
+
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        print(f"Detected encoding: {detected_encoding}")        
+        try:
+            # 'ISO-8859-1' or 'utf-8'           
+            json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
+        except json.JSONDecodeError:            
+            pass
+        except UnicodeDecodeError:
+            pass                             
+        except Exception:
+            pass                
+
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+         
+        free_json_data.argtypes = [ctypes.c_int]
+        free_json_data.restype = ctypes.c_int
+        
+        code = free_json_data(3)
+        return json_dict       
 
     def getCustomer(self, customer_id):
         
         getCustomerCharOut = DBEngineWrapper.get_dll().getCustomerCharOut
         release = DBEngineWrapper.get_dll().free_json_data      
-        getCustomerCharOut.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
+        getCustomerCharOut.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]     
         getCustomerCharOut.restype = ctypes.c_int
 
         # Create a pointer to a char buffer
@@ -106,7 +134,7 @@ class DBEngineWrapper():
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
         free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
         code = free_json_data(1)
         
@@ -141,7 +169,7 @@ class DBEngineWrapper():
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
         free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
         code = free_json_data(1)
         
@@ -275,7 +303,7 @@ class DBEngineWrapper():
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
         free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
         code = free_json_data(1)
         
