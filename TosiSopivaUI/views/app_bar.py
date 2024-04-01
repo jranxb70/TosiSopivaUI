@@ -14,9 +14,7 @@ class AppBar(ft.UserControl):
         
     def go_home(self, e):
         page = e.page
-        page.go('/')
-    
-
+        page.go('/') 
 
     def build(self):
         def close_dialog(e):

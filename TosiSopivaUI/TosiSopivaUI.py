@@ -1,6 +1,5 @@
 import flet as ft
 from flet import *
-import sqlite3
 from flet_route import Routing, path
 from views.home import Home
 from views.page_reg import page_reg
@@ -16,10 +15,10 @@ from views.page_var_options import page_var_options
 from views.page_product_item import page_product_item
 from views.page_invoice_line import page_invoice_line
 from views.cabinet import page_cabinet
-conn = sqlite3.connect('invoice.db',check_same_thread=False)
+from views.page_data import data
 
 def main(page: ft.Page):
-    page.theme_mode = 'dark'
+
     app_routes = [
         
         path(url="/", clear= True,view=Home),
@@ -36,6 +35,7 @@ def main(page: ft.Page):
         path(url="/page_var_options",clear= True, view=page_var_options),
         path(url="/page_product_item",clear= True, view=page_product_item),
         path(url="/page_invoice_line",clear= True, view=page_invoice_line),
+        path(url="/page_data",clear= True, view=data),
     ]
     
     Routing(page=page, app_routes=app_routes)
@@ -102,9 +102,9 @@ if __name__ == '__main__':
 #         self.entries['city'] =   fields['city']   
              
 
-#     def save(self):
-#         data = {field: entry.get() for field, entry in self.entries.items()}
-#         messagebox.showinfo("Saved", f"Saved data: {data}")    
+    # def save(self):
+    #     data = {field: entry.get() for field, entry in self.entries.items()}
+    #     messagebox.showinfo("Saved", f"Saved data: {data}")    
 
                         
 

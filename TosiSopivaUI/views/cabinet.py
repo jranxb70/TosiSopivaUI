@@ -4,6 +4,57 @@ from flet import *
 from views.app_bar import AppBar
 
 def page_cabinet(page: ft.Page, params: Params, basket: Basket):
+    images = ft.Row(expand=1, wrap=False, scroll="always")
+    
+    images.controls.append(
+        Container(
+            ft.Image(
+                src="img/customer.jpg",
+                width=200,
+                height=200,
+                fit=ft.ImageFit.FIT_HEIGHT,
+                border_radius=ft.border_radius.all(10),
+                tooltip="Customers",
+            ),
+            on_click=lambda _:page.go('/page_all_customers')
+        )
+    )
+    images.controls.append(
+        Container(
+            ft.Image(
+                src="img/companies.jpg",
+                width=200,
+                height=200,
+                fit=ft.ImageFit.FIT_HEIGHT,
+                border_radius=ft.border_radius.all(10),
+                tooltip="Companies",
+            ), on_click=lambda _:page.go('/page_all_companies')
+        )
+    )
+    images.controls.append(
+        Container(
+            ft.Image(
+                src="img/invoice.png",
+                width=200,
+                height=200,
+                fit=ft.ImageFit.FIT_HEIGHT,
+                border_radius=ft.border_radius.all(10),
+                tooltip="Invoices",
+            ), on_click=lambda _:page.go('/page_all_invoices')
+        )
+    )
+    images.controls.append(
+        Container(
+            ft.Image(
+                src="img/data.jpg",
+                width=200,
+                height=200,
+                fit=ft.ImageFit.FIT_HEIGHT,
+                border_radius=ft.border_radius.all(10),
+                tooltip="Data",
+            ), on_click=lambda _:page.go('/page_data')
+        )
+    )
 
     return ft.View(
         "/page_cabinet",
@@ -11,15 +62,7 @@ def page_cabinet(page: ft.Page, params: Params, basket: Basket):
        controls=[
             AppBar().build(),
             Text("Cabinet",size=30,weight="bold"),
-            ElevatedButton(text='Customers', on_click=lambda _:page.go('/page_all_customers')),
-            ElevatedButton(text='Products', on_click=lambda _:page.go('/page_all_products')),
-            ElevatedButton(text='Products Categories', on_click=lambda _:page.go('/page_product_category')),
-            ElevatedButton(text='Companies', on_click=lambda _:page.go('/page_all_companies')),
-            ElevatedButton(text='Invoices', on_click=lambda _:page.go('/page_all_invoices')),
-            ElevatedButton(text='Variations', on_click=lambda _:page.go('/page_all_variations')),
-            ElevatedButton(text='Variation options', on_click=lambda _:page.go('/page_var_options')),
-            ElevatedButton(text='Product items', on_click=lambda _:page.go('/page_product_item')),
-            ElevatedButton(text='Invoice line', on_click=lambda _:page.go('/page_invoice_line')),
+            images,
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,

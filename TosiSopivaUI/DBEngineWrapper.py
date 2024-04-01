@@ -156,6 +156,13 @@ class DBEngineWrapper():
 
         updateCustomerFunc(customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email)
         
+    def deleteCustomer(self, customer_id):
+        deleteCustomerFunc = DBEngineWrapper.get_dll().deleteCustomer
+        deleteCustomerFunc.argtypes = [ctypes.c_long]
+        deleteCustomerFunc.restype = None
+
+        deleteCustomerFunc(customer_id)
+        
     def addNewInvoice(self, **kwargs):
 
         # Define the required keys

@@ -4,7 +4,7 @@ from views.app_bar import AppBar
 
 def Home(page: Page, params: Params, basket: Basket):
     imgcontainer = Container(
-        content = Image(src="bg.jpg", opacity=0.4),
+        content = Image(src="img/bg.jpg", opacity=0.4),
         padding=-10,
         margin=0,
     )
