@@ -32,6 +32,21 @@ class DBEngineWrapper():
     def get_dll():
         return DBEngineWrapper._class_lib        
 
+    def registerVeryConvenientUser(self, login, passwd, email):
+        registerDBUser = DBEngineWrapper.get_dll().addDBUser
+        registerDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
+        registerDBUser.restype = None
+
+        login = login.encode("utf-8")
+        passwd = passwd.encode("utf-8")
+        email = email.encode("utf-8")
+
+        user_id = ctypes.c_int()  
+
+        registerDBUser(login, passwd, email, user_id)   
+    
+
+
     def getCustomer(self, customer_id):
         
         getCustomerCharOut = DBEngineWrapper.get_dll().getCustomerCharOut
@@ -140,6 +155,30 @@ class DBEngineWrapper():
 
         addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email, customer_id)
         return customer_id.value
+
+    def updateCustomer(self, customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email):
+        updateCustomer = DBEngineWrapper.get_dll().updateCustomer
+        updateCustomer.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        updateCustomer.restype = None
+
+        customer_id = ctypes.c_int(customer_id)
+
+        customer_firstName = customer_firstName.encode("utf-8")
+        customer_lastName = customer_lastName.encode("utf-8")
+        customer_address = customer_address.encode("utf-8")
+        customer_zip = customer_zip.encode("utf-8")
+        customer_city = customer_city.encode("utf-8")
+        customer_phone = customer_phone.encode("utf-8")
+        customer_email = customer_email.encode("utf-8")
+
+        updateCustomer(customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email)      
+        
+    def deleteCustomer(self, customer_id):
+        deleteCustomer = DBEngineWrapper.get_dll().deleteCustomer 
+        deleteCustomer.argtypes = [ctypes.c_int]
+        deleteCustomer.restype = ctypes.c_int
+
+        deleteCustomer(customer_id)
 
     def addNewInvoice(self, **kwargs):
 
