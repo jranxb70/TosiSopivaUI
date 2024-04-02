@@ -79,6 +79,90 @@ class DBEngineWrapper():
         access = getDBUserFunc(login_encoded, password_encoded)
 
         return access
+    
+    def queryInvoices(self, procedure_switch, start_date, end_date, sorting):
+        queryInvoices = DBEngineWrapper.get_dll().queryInvoices
+        queryInvoices.argtypes = [
+        ctypes.c_long,
+        ctypes.c_char_p,
+        ctypes.c_char_p,
+        ctypes.c_long,
+        ctypes.POINTER(ctypes.c_char_p)
+        ]
+        queryInvoices.restype = ctypes.c_int
+        
+        start_date_bytes = ctypes.c_char_p(start_date.encode('utf-8')) if start_date else None
+        end_date_bytes = ctypes.c_char_p(end_date.encode('utf-8')) if end_date else None
+    
+    
+        json_data_ptr = ctypes.c_char_p()
+        result = queryInvoices(
+            procedure_switch,
+            start_date_bytes,
+            end_date_bytes,
+            sorting,
+            ctypes.byref(json_data_ptr)
+        )
+    
+    # Process the result
+        if result != 0:
+            print("Error:", result)
+            return None
+    
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        print(f"Detected encoding: {detected_encoding}")
+    
+        try:
+            json_dict = json.loads(cont.decode(detected_encoding))
+        except (json.JSONDecodeError, UnicodeDecodeError, Exception) as e:
+            print(f"Error decoding JSON data: {e}")
+            json_dict = {}
+    
+    # Free resources
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+        free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
+        free_json_data.argtypes = [ctypes.c_int]
+        free_json_data(1)
+        free_sql_error_details()
+    
+        return json_dict
+    
+    # def queryAllInvoices(self, procedure_switch):
+    #     queryAllInvoices = DBEngineWrapper.get_dll().queryInvoices
+    #     queryAllInvoices.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
+    
+    #     json_data_ptr = ctypes.c_char_p()
+    #     error_list_ptr = ctypes.POINTER(node_t)()
+
+    #     queryAllInvoices(procedure_switch, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
+
+    #     cont = json_data_ptr.value
+    #     detected_encoding = chardet.detect(cont)['encoding']
+    #     # print(f"Detected encoding: {detected_encoding}")
+
+    #     try:
+    #         # 'ISO-8859-1' or 'utf-8'
+    #         json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
+    #     except json.JSONDecodeError:
+    #         pass
+    #     except UnicodeDecodeError:
+    #         pass
+    #     except Exception:
+    #         pass
+        
+    #     free_json_data = DBEngineWrapper.get_dll().free_json_data
+    #     free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
+
+    #     free_json_data.argtypes = [ctypes.c_int]
+    #     free_json_data = ctypes.c_int
+
+    #     code = free_json_data(1)
+
+    #     free_sql_error_details()
+
+    #     return json_dict     
+    
 
     def queryInvoicesByCustomer(self, customer_id):
 
