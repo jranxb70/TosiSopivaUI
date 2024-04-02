@@ -1,25 +1,27 @@
 from flet import *
 import sqlite3
 from Bill import get_invoice
+from views.page_invoice_line import get_id
+from db_invoice_line import db_get_id
 
 from DBEngineWrapper import DBEngineWrapper
 engine = DBEngineWrapper()
 
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
-def create_table():
-	c = conn.cursor()
-	c.execute("""CREATE TABLE IF NOT EXISTS invoice(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-        customer_id INTEGER,
-		invoice_date DATE,
-		invoice_bankreference TEXT,
-		invoice_subtotal REAL,
-		invoice_tax REAL,
-  		invoice_total REAL,
-		invoice_due_date DATE)
-		""")
-	conn.commit()
+# def create_table():
+# 	c = conn.cursor()
+# 	c.execute("""CREATE TABLE IF NOT EXISTS invoice(
+# 		id INTEGER PRIMARY KEY AUTOINCREMENT,
+#         customer_id INTEGER,
+# 		invoice_date DATE,
+# 		invoice_bankreference TEXT,
+# 		invoice_subtotal REAL,
+# 		invoice_tax REAL,
+#   		invoice_total REAL,
+# 		invoice_due_date DATE)
+# 		""")
+# 	conn.commit()
 
 tb = DataTable(
 	columns=[
@@ -128,13 +130,12 @@ bill = DataTable(
 def show_detail(e):
 	page = e.page
 	my_id = int(e.control.data)
+	get_id(my_id)
+	db_get_id(my_id)
 	# c = conn.cursor()
 	# c.execute("SELECT * FROM invoice WHERE id=?", (my_id, ))
 	# invoice = list(c.fetchone())
 	invoice = engine.query_invoice_by_id(my_id)
-	print("*********************")
-	print(invoice)
-	print("*********************")
 	get_invoice(invoice)
 	bill.rows.clear()
 	bill.rows.append(

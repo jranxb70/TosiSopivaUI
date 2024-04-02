@@ -111,7 +111,7 @@ class DBEngineWrapper():
     
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")
+        # print(f"Detected encoding: {detected_encoding}")
     
         try:
             json_dict = json.loads(cont.decode(detected_encoding))
@@ -128,41 +128,6 @@ class DBEngineWrapper():
     
         return json_dict
     
-    # def queryAllInvoices(self, procedure_switch):
-    #     queryAllInvoices = DBEngineWrapper.get_dll().queryInvoices
-    #     queryAllInvoices.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
-    
-    #     json_data_ptr = ctypes.c_char_p()
-    #     error_list_ptr = ctypes.POINTER(node_t)()
-
-    #     queryAllInvoices(procedure_switch, ctypes.byref(json_data_ptr), ctypes.byref(error_list_ptr))
-
-    #     cont = json_data_ptr.value
-    #     detected_encoding = chardet.detect(cont)['encoding']
-    #     # print(f"Detected encoding: {detected_encoding}")
-
-    #     try:
-    #         # 'ISO-8859-1' or 'utf-8'
-    #         json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
-    #     except json.JSONDecodeError:
-    #         pass
-    #     except UnicodeDecodeError:
-    #         pass
-    #     except Exception:
-    #         pass
-        
-    #     free_json_data = DBEngineWrapper.get_dll().free_json_data
-    #     free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
-
-    #     free_json_data.argtypes = [ctypes.c_int]
-    #     free_json_data = ctypes.c_int
-
-    #     code = free_json_data(1)
-
-    #     free_sql_error_details()
-
-    #     return json_dict     
-    
 
     def queryInvoicesByCustomer(self, customer_id):
 
@@ -175,7 +140,7 @@ class DBEngineWrapper():
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")        
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -210,7 +175,7 @@ class DBEngineWrapper():
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")        
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -283,8 +248,8 @@ class DBEngineWrapper():
             if key not in kwargs:
                 raise ValueError(f"Missing required key: {key}")
             
-        for key, value in kwargs.items():
-            print(f"{key}: {value}")
+        # for key, value in kwargs.items():
+        #     print(f"{key}: {value}")
 
         # Validate invoice_lines
         invoice_lines = kwargs.get("invoice_lines", [])
@@ -341,7 +306,7 @@ class DBEngineWrapper():
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")        
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -361,4 +326,23 @@ class DBEngineWrapper():
         code = free_json_data(1)
         
         free_sql_error_details()   
-        return json_dict                
+        return json_dict        
+    
+    def addInvoiceLine(self, open_database, invoice_id, product_item_id, invoiceline_quantity, invoiceline_price, product_description):
+        addInvoiceLine = DBEngineWrapper.get_dll().addInvoiceLine
+        addInvoiceLine.argtypes = [
+            ctypes.c_bool,  #bool open_database
+            ctypes.c_int,   #int invoice_id
+            ctypes.c_int,   #int product_item_id
+            ctypes.c_int,   #int invoiceline_quantity
+            ctypes.c_double,#double invoiceline_price
+            ctypes.c_char_p #char* product_description
+        ]
+        addInvoiceLine.restype = None
+        product_item_id = product_item_id.encode('utf-8')
+        invoiceline_quantity = invoiceline_quantity.encode('utf-8')
+        invoiceline_price = invoiceline_price.encode('utf-8')
+        product_description_bytes = product_description.encode('utf-8')
+        
+        addInvoiceLine(open_database, invoice_id, int(product_item_id), int(invoiceline_quantity), float(invoiceline_price), product_description_bytes)
+        
