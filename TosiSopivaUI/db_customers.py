@@ -28,6 +28,10 @@ def showdelete(e):
 		tb.rows.clear()	
 		calldb()
 		tb.update()
+		page = e.page
+		page.snack_bar = ft.SnackBar(ft.Text('Deleted!'))
+		page.snack_bar.open = True
+		page.update()
 
 	except Exception as e:
 		print(e)
