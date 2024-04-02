@@ -43,14 +43,14 @@ class AppBar(ft.UserControl):
     )
             
         app_bar = ft.AppBar(
-            leading=ft.IconButton(ft.icons.ACCOUNT_BALANCE, on_click=self.go_home),
+            leading=ft.IconButton(ft.icons.ACCOUNT_BALANCE, on_click=self.go_home, tooltip="Home"),
             leading_width=40,
             title = ft.Text('Tosi Sopiva Laskutus'),
             center_title=False,
             bgcolor=ft.colors.SURFACE_VARIANT,
             actions=[
-                ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=self.change_theme),
-                ft.IconButton(ft.icons.EXIT_TO_APP, on_click=open_dialog),
+                ft.IconButton(ft.icons.WB_SUNNY_OUTLINED, on_click=self.change_theme, tooltip="Change theme"),
+                ft.IconButton(ft.icons.EXIT_TO_APP, on_click=open_dialog, tooltip="Exit"),
                 ft.SubmenuButton(
             leading=ft.Icon(ft.icons.LANGUAGE),
             controls=[
