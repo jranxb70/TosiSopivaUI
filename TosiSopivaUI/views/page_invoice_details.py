@@ -20,7 +20,7 @@ def page_invoice_details(page: ft.Page, params: Params, basket: Basket):
         	AppBar().build(),
             Text("INVOICE",size=30,weight="bold"),
             bill,
-            ElevatedButton("add new line", on_click=call_inv_lines),
+            ElevatedButton("Lines", on_click=call_inv_lines),
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_all_invoices')),
             ElevatedButton(text='Download PDF', on_click=generate_bill),
         ],

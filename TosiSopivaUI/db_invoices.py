@@ -165,7 +165,7 @@ def calldb():
 	print(invoices)
 	if not invoices == "":
 		# for key, value in invoices.items():
-			# print(f"{key}: {value}")
+		# print(f"{key}: {value}")
 		# keys = ['id', 'customer_id', 'invoice_date', 'invoice_bankreference', 'invoice_subtotal', 'invoice_tax', 'invoice_total', 'invoice_due_date']
 		# result = [dict(zip(keys, values)) for values in invoices]
 		for invoice in invoices['invoices']:

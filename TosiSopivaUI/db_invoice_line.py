@@ -13,7 +13,7 @@ def db_get_id(id):
 
 tb = DataTable(
 	columns=[
-		DataColumn(Text("Invoice id")),
+		DataColumn(Text("ID")),
 		DataColumn(Text("Product id")),
 		DataColumn(Text("Quantity")),
 		DataColumn(Text("Price")),
