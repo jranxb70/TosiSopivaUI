@@ -55,15 +55,18 @@ class DBEngineWrapper():
         retcode = getDBUser(login, password) 
         return retcode
 
-    def selectAllInvoices(self, switch):                                 
-        selectAllInvoices = DBEngineWrapper.get_dll().queryAllInvoices
-        selectAllInvoices.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]    
-        selectAllInvoices.restype = None
+    def queryInvoices(self, switch, start_date, end_date, sorting):                                 
+        queryInvoices = DBEngineWrapper.get_dll().queryInvoices
+        queryInvoices.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]    
+        queryInvoices.restype = None
 
         # Create a pointer to a char buffer
         json_data_ptr = ctypes.c_char_p()
 
-        selectAllInvoices(switch, ctypes.byref(json_data_ptr))
+        start_date = start_date.encode("utf-8")     
+        end_date = end_date.encode("utf-8")             
+
+        queryInvoices(switch, start_date, end_date, sorting, ctypes.byref(json_data_ptr))
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
@@ -80,16 +83,36 @@ class DBEngineWrapper():
 
         free_json_data = DBEngineWrapper.get_dll().free_json_data
          
-        free_json_data.argtypes = [ctypes.c_int]
         free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(3)
-        return json_dict       
+        code = free_json_data()
+        return json_dict
+
+    def getCompany(self, company_id):
+        
+        getCompany = DBEngineWrapper.get_dll().getCompany
+        free_json_data = DBEngineWrapper.get_dll().free_json_data      
+        getCompany.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]     
+        getCompany.restype = None
+
+        # Create a pointer to a char buffer
+        json_data_ptr = ctypes.c_char_p()
+
+        # Call the C function
+        getCompany(company_id, ctypes.byref(json_data_ptr))
+        
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
+        free_json_data.restype = ctypes.c_int
+        tuppu = free_json_data()
+                               
+        return customer_data       
 
     def getCustomer(self, customer_id):
         
         getCustomerCharOut = DBEngineWrapper.get_dll().getCustomerCharOut
-        release = DBEngineWrapper.get_dll().free_json_data      
+        free_json_data = DBEngineWrapper.get_dll().free_json_data      
         getCustomerCharOut.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]     
         getCustomerCharOut.restype = ctypes.c_int
 
@@ -102,9 +125,8 @@ class DBEngineWrapper():
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
         customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
-        release.argtypes = [ctypes.c_int]
-        release.restype = ctypes.c_int
-        tuppu = release(2)
+        free_json_data.restype = ctypes.c_int
+        tuppu = free_json_data()
                                
         return customer_data
 
@@ -133,10 +155,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
         free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict        
@@ -168,10 +189,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
         free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict       
@@ -302,10 +322,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
         free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict                
