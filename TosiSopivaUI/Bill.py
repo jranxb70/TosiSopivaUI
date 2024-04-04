@@ -54,7 +54,7 @@ class PDFPSReporte:
 
     def PageHeader(self):
             get_customer()
-            img = Image('img/logo.png', kind='proportional')
+            img = Image('TosiSopivaUI\img\logo.png', kind='proportional')
             img.drawHeight = 50
             img.drawWidth = 50
             img.hAlign = 'RIGHT'
