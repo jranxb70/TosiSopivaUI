@@ -346,3 +346,20 @@ class DBEngineWrapper():
         
         addInvoiceLine(open_database, invoice_id, int(product_item_id), int(invoiceline_quantity), float(invoiceline_price), product_description_bytes)
         
+    def get_company(self, company_id):
+        getCompany = DBEngineWrapper.get_dll().getCompany
+
+        getCompany.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
+        getCompany.restype = None
+
+        jsonStringCompany = ctypes.POINTER(ctypes.c_char)()
+        getCompany(company_id, ctypes.byref(jsonStringCompany))
+
+        json_string = jsonStringCompany.contents.value.decode()
+
+        free_json_string = ctypes.CDLL("libc.so.6").free
+        free_json_string.argtypes = [ctypes.c_void_p]
+        free_json_string(jsonStringCompany)
+
+        return json_string
+        
