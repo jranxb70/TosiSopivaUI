@@ -24,12 +24,16 @@ tb = DataTable(
 def showdelete(e):
 	try:
 		myid = int(e.control.data)
-		c = conn.cursor()
-		c.execute("DELETE FROM customer WHERE id=?", (myid,))
-		conn.commit()
+
+		engine.deleteCustomer(myid)
 		tb.rows.clear()	
 		calldb()
 		tb.update()
+		page = e.page
+		page.snack_bar = ft.SnackBar(ft.Text('Deleted!'))
+		page.snack_bar.open = True
+		page.update()
+
 
 	except Exception as e:
 		print(e)

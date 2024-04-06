@@ -2,59 +2,39 @@ import flet as ft
 from flet_route import Params, Basket
 import sqlite3
 from flet import *
-#import imp
-from views.app_bar import AppBar
 
+from views.app_bar import AppBar
 from DBEngineWrapper import DBEngineWrapper
+engine = DBEngineWrapper()
 
 def page_auth(page: ft.Page, params: Params, basket: Basket):
-        
-    def auth_userLocal(e):
-        db = sqlite3.connect('invoice.db')
-        cur = db.cursor()
-
-        cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
-        if cur.fetchone() != None:
-            page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
-            page.snack_bar.open = True
-            page.go('/page_cabinet')
-        else:
-            page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
-            page.snack_bar.open = True
-            page.update()
-        db.commit()
-        db.close()
-
-    def auth_userLocal(e):
-        db = sqlite3.connect('invoice.db')
-        cur = db.cursor()
-
-        cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
-        if cur.fetchone() != None:
-            page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
-            page.snack_bar.open = True
-            page.go('/page_cabinet')
-        else:
-            page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
-            page.snack_bar.open = True
-            page.update()
-        db.commit()
-        db.close()
-
+  
     def auth_user(e):
-        dbEngine = DBEngineWrapper()
-
-        ret = dbEngine.getDBUser(user_login.value, user_pass.value)
- 
-        if ret == 1:
+        # db = sqlite3.connect('invoice.db')
+        # cur = db.cursor()
+        # cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
+        
+        result = engine.getDBUser(user_login.value, user_pass.value)
+        print(user_login.value, user_pass.value)
+        print(result)
+        
+        if result == 1:
             page.snack_bar = ft.SnackBar(ft.Text('Successful login!'))
             page.snack_bar.open = True
             page.go('/page_cabinet')
+        elif result == -3:
+            page.snack_bar = ft.SnackBar(ft.Text('No connection to database...'))
+            page.snack_bar.open = True
+            page.update()
+
         else:
             page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
             page.snack_bar.open = True
             page.update()
-            
+
+        # db.commit()
+        # db.close()
+
 
     def validate(e):
         if all([user_login.value, user_pass.value]):   

@@ -16,7 +16,7 @@ def data(page: ft.Page, params: Params, basket: Basket):
             ElevatedButton(text='Variations', on_click=lambda _:page.go('/page_all_variations')),
             ElevatedButton(text='Variation options', on_click=lambda _:page.go('/page_var_options')),
             ElevatedButton(text='Product items', on_click=lambda _:page.go('/page_product_item')),
-            ElevatedButton(text='Invoice line', on_click=lambda _:page.go('/page_invoice_line')),
+
             ElevatedButton(text='Back', on_click=lambda _:page.go('/page_cabinet')),
         ],
         vertical_alignment=MainAxisAlignment.CENTER,

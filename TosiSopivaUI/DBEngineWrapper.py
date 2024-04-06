@@ -25,89 +25,16 @@ class DBEngineWrapper():
         if ctypes.sizeof(ctypes.c_void_p) == 4:
             DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
-            #DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
-            DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
+
+            DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            # DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
+
 
     @staticmethod
     def get_dll():
         return DBEngineWrapper._class_lib
 
-    def registerVeryConvenientUser(self, login, passwd, email):
-        registerDBUser = DBEngineWrapper.get_dll().addDBUser
-        registerDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
-        registerDBUser.restype = ctypes.c_int
-
-        login = login.encode("utf-8")
-        passwd = passwd.encode("utf-8")
-        email = email.encode("utf-8")
-
-        retCode = registerDBUser(login, passwd, email)   
-        return retCode
-
-    def getDBUser(self, login, password):
-        getDBUser = DBEngineWrapper.get_dll().getDBUser
-        getDBUser.argtypes = [ctypes.c_char_p, ctypes.c_char_p]  
-        getDBUser.restype = ctypes.c_int  
-
-        login = login.encode("utf-8")
-        password = password.encode("utf-8")                    
-         
-        retcode = getDBUser(login, password) 
-        return retcode
-
-    def queryInvoices(self, switch, start_date, end_date, sorting):                                 
-        queryInvoices = DBEngineWrapper.get_dll().queryInvoices
-        queryInvoices.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]    
-        queryInvoices.restype = None
-
-        # Create a pointer to a char buffer
-        json_data_ptr = ctypes.c_char_p()
-
-        start_date = start_date.encode("utf-8")     
-        end_date = end_date.encode("utf-8")             
-
-        queryInvoices(switch, start_date, end_date, sorting, ctypes.byref(json_data_ptr))
-
-        cont = json_data_ptr.value
-        detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
-        try:
-            # 'ISO-8859-1' or 'utf-8'           
-            json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
-        except json.JSONDecodeError:            
-            pass
-        except UnicodeDecodeError:
-            pass                             
-        except Exception:
-            pass                
-
-        free_json_data = DBEngineWrapper.get_dll().free_json_data
-         
-        free_json_data.restype = ctypes.c_int
-        
-        code = free_json_data()
-        return json_dict
-
-    def getCompany(self, company_id):
-        
-        getCompany = DBEngineWrapper.get_dll().getCompany
-        free_json_data = DBEngineWrapper.get_dll().free_json_data      
-        getCompany.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]     
-        getCompany.restype = None
-
-        # Create a pointer to a char buffer
-        json_data_ptr = ctypes.c_char_p()
-
-        # Call the C function
-        getCompany(company_id, ctypes.byref(json_data_ptr))
-        
-        cont = json_data_ptr.value
-        detected_encoding = chardet.detect(cont)['encoding']
-        customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
-        free_json_data.restype = ctypes.c_int
-        tuppu = free_json_data()
-                               
-        return customer_data       
+    
 
     def getCustomer(self, customer_id):
         
@@ -125,10 +52,88 @@ class DBEngineWrapper():
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
         customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
-        free_json_data.restype = ctypes.c_int
-        tuppu = free_json_data()
+
+        release.argtypes = [ctypes.c_int]
+        release.restype = ctypes.c_int
+        tuppu = release(2)
+
                                
         return customer_data
+    
+    def addDBUser(self,login, password, email):
+        addDBUserFunc = DBEngineWrapper.get_dll().addDBUser
+        addDBUserFunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        addDBUserFunc.restype = ctypes.c_int
+
+        # user_id = ctypes.c_int()
+        login_encoded = login.encode("utf-8")
+        password_encoded = password.encode("utf-8")
+        email_encoded = email.encode("utf-8")
+
+        result = addDBUserFunc(login_encoded, password_encoded, email_encoded)
+
+        return result
+    
+    def getDBUser(self, login, user_password):
+        getDBUserFunc = DBEngineWrapper.get_dll().getDBUser
+        getDBUserFunc.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+        getDBUserFunc.restype = ctypes.c_int
+
+        login_encoded = login.encode("utf-8")
+        password_encoded = user_password.encode("utf-8")
+
+        access = getDBUserFunc(login_encoded, password_encoded)
+
+        return access
+    
+    def queryInvoices(self, procedure_switch, start_date, end_date, sorting):
+        queryInvoices = DBEngineWrapper.get_dll().queryInvoices
+        queryInvoices.argtypes = [
+        ctypes.c_long,
+        ctypes.c_char_p,
+        ctypes.c_char_p,
+        ctypes.c_long,
+        ctypes.POINTER(ctypes.c_char_p)
+        ]
+        queryInvoices.restype = ctypes.c_int
+        
+        start_date_bytes = ctypes.c_char_p(start_date.encode('utf-8')) if start_date else None
+        end_date_bytes = ctypes.c_char_p(end_date.encode('utf-8')) if end_date else None
+    
+    
+        json_data_ptr = ctypes.c_char_p()
+        result = queryInvoices(
+            procedure_switch,
+            start_date_bytes,
+            end_date_bytes,
+            sorting,
+            ctypes.byref(json_data_ptr)
+        )
+    
+    # Process the result
+        if result != 0:
+            print("Error:", result)
+            return None
+    
+        cont = json_data_ptr.value
+        detected_encoding = chardet.detect(cont)['encoding']
+        # print(f"Detected encoding: {detected_encoding}")
+    
+        try:
+            json_dict = json.loads(cont.decode(detected_encoding))
+        except (json.JSONDecodeError, UnicodeDecodeError, Exception) as e:
+            print(f"Error decoding JSON data: {e}")
+            json_dict = {}
+    
+    # Free resources
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+        free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
+        free_json_data.argtypes = [ctypes.c_int]
+        free_json_data(1)
+        free_sql_error_details()
+    
+        return json_dict
+    
 
     def queryInvoicesByCustomer(self, customer_id):
 
@@ -141,7 +146,7 @@ class DBEngineWrapper():
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")        
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -175,7 +180,7 @@ class DBEngineWrapper():
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")        
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -214,13 +219,12 @@ class DBEngineWrapper():
 
         addCustomer(customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email, customer_id)
         return customer_id.value
-
+    
     def updateCustomer(self, customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email):
-        updateCustomer = DBEngineWrapper.get_dll().updateCustomer
-        updateCustomer.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
-        updateCustomer.restype = None
+        updateCustomerFunc = DBEngineWrapper.get_dll().updateCustomer
+        updateCustomerFunc.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
+        updateCustomerFunc.restype = None
 
-        customer_id = ctypes.c_int(customer_id)
 
         customer_firstName = customer_firstName.encode("utf-8")
         customer_lastName = customer_lastName.encode("utf-8")
@@ -230,15 +234,16 @@ class DBEngineWrapper():
         customer_phone = customer_phone.encode("utf-8")
         customer_email = customer_email.encode("utf-8")
 
-        updateCustomer(customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email)      
+
+        updateCustomerFunc(customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email)
         
     def deleteCustomer(self, customer_id):
-        deleteCustomer = DBEngineWrapper.get_dll().deleteCustomer 
-        deleteCustomer.argtypes = [ctypes.c_int]
-        deleteCustomer.restype = ctypes.c_int
+        deleteCustomerFunc = DBEngineWrapper.get_dll().deleteCustomer
+        deleteCustomerFunc.argtypes = [ctypes.c_long]
+        deleteCustomerFunc.restype = None
 
-        ret = deleteCustomer(customer_id)
-        return ret        
+        deleteCustomerFunc(customer_id)
+        
 
     def addNewInvoice(self, **kwargs):
 
@@ -250,8 +255,8 @@ class DBEngineWrapper():
             if key not in kwargs:
                 raise ValueError(f"Missing required key: {key}")
             
-        for key, value in kwargs.items():
-            print(f"{key}: {value}")
+        # for key, value in kwargs.items():
+        #     print(f"{key}: {value}")
 
         # Validate invoice_lines
         invoice_lines = kwargs.get("invoice_lines", [])
@@ -308,7 +313,7 @@ class DBEngineWrapper():
 
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
-        print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")        
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -327,5 +332,40 @@ class DBEngineWrapper():
         code = free_json_data()
         
         free_sql_error_details()   
-        return json_dict                
+        return json_dict        
+    
+    def addInvoiceLine(self, open_database, invoice_id, product_item_id, invoiceline_quantity, invoiceline_price, product_description):
+        addInvoiceLine = DBEngineWrapper.get_dll().addInvoiceLine
+        addInvoiceLine.argtypes = [
+            ctypes.c_bool,  #bool open_database
+            ctypes.c_int,   #int invoice_id
+            ctypes.c_int,   #int product_item_id
+            ctypes.c_int,   #int invoiceline_quantity
+            ctypes.c_double,#double invoiceline_price
+            ctypes.c_char_p #char* product_description
+        ]
+        addInvoiceLine.restype = None
+        product_item_id = product_item_id.encode('utf-8')
+        invoiceline_quantity = invoiceline_quantity.encode('utf-8')
+        invoiceline_price = invoiceline_price.encode('utf-8')
+        product_description_bytes = product_description.encode('utf-8')
+        
+        addInvoiceLine(open_database, invoice_id, int(product_item_id), int(invoiceline_quantity), float(invoiceline_price), product_description_bytes)
+        
+    def get_company(self, company_id):
+        getCompany = DBEngineWrapper.get_dll().getCompany
 
+        getCompany.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
+        getCompany.restype = None
+
+        jsonStringCompany = ctypes.POINTER(ctypes.c_char)()
+        getCompany(company_id, ctypes.byref(jsonStringCompany))
+
+        json_string = jsonStringCompany.contents.value.decode()
+
+        free_json_string = ctypes.CDLL("libc.so.6").free
+        free_json_string.argtypes = [ctypes.c_void_p]
+        free_json_string(jsonStringCompany)
+
+        return json_string
+        

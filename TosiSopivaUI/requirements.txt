@@ -2,3 +2,5 @@ chardet==5.2.0
 flet_route
 reportlab
 validate_email
+pyinstaller
+

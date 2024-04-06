@@ -365,9 +365,6 @@ FodyWeavers.xsd
 /TosiSopivaUI/envForTosiSopivaUI
 /TosiSopivaUI/error_log.txt
 /TosiSopivaUI/invoice_data.json
-/TosiSopivaUI/invoice.db
-/TosiSopivaUI/engine.dll
-/TosiSopivaUI/TosiSopivaUI – kopio.pyproj
-/TosiSopivaUI/env312
-/TosiSopivaUI/engine_old.dll
-/TosiSopivaUI/engine_today.dll
+
+invoice.db
+
