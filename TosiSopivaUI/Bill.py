@@ -1,4 +1,5 @@
 import flet as ft
+
 from DBEngineWrapper import DBEngineWrapper
 from reportlab.platypus import (SimpleDocTemplate, Paragraph, Image, Spacer, Table, TableStyle)
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
@@ -12,18 +13,22 @@ global_bill = []
 global_customer = []
 engine = DBEngineWrapper()
 
+
 def get_invoice(invoice):
     global global_bill
     global_bill = invoice
     
 def get_customer():
+
     global global_customer
     global_customer = engine.getCustomer(global_bill['customer_id'])
     
+
 def generate_bill(e):
     page = e.page
     page.snack_bar = ft.SnackBar(ft.Text('Successful download!'))
     page.snack_bar.open = True
+
     generate_bill_pdf(f"{global_bill['invoice_bank_reference']}__{global_bill['invoice_due_date']}.pdf")
     page.update()
     
@@ -200,3 +205,4 @@ class PDFPSReporte:
         self.elements.append(table)
         spacer = Spacer(10, 10)
         self.elements.append(spacer)
+

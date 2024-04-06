@@ -1,6 +1,7 @@
 from flet import *
 import sqlite3
 from Bill import get_invoice
+
 from views.page_invoice_line import get_id
 from db_invoice_line import db_get_id
 
@@ -23,6 +24,7 @@ conn = sqlite3.connect('invoice.db',check_same_thread=False)
 # 		""")
 # 	conn.commit()
 
+
 tb = DataTable(
 	columns=[
      	DataColumn(Text("id")),
@@ -33,7 +35,9 @@ tb = DataTable(
 		DataColumn(Text("Tax")),
 		DataColumn(Text("Total")),
 		DataColumn(Text("Due date")),
+
 		DataColumn(Text("Outstanding balance")),
+
 		DataColumn(Text("Show")),
     	DataColumn(Text("Actions")),
 	],
@@ -115,12 +119,14 @@ def showedit(e):
  
 bill = DataTable(
 	columns=[
+
      	DataColumn(Text("ID")),
 		DataColumn(Text("Client name")),
 		DataColumn(Text("Client surname")),
 		DataColumn(Text("Client phone")),
 		DataColumn(Text("Bank reference")),
 		DataColumn(Text("Date")),
+
 		DataColumn(Text("Total")),
 		DataColumn(Text("Due date")),
 	],
@@ -130,17 +136,20 @@ bill = DataTable(
 def show_detail(e):
 	page = e.page
 	my_id = int(e.control.data)
+
 	get_id(my_id)
 	db_get_id(my_id)
 	# c = conn.cursor()
 	# c.execute("SELECT * FROM invoice WHERE id=?", (my_id, ))
 	# invoice = list(c.fetchone())
 	invoice = engine.query_invoice_by_id(my_id)
+
 	get_invoice(invoice)
 	bill.rows.clear()
 	bill.rows.append(
 		DataRow(
             cells=[
+
                 DataCell(Text(invoice['invoice_id'])),
                 DataCell(Text(invoice['first_name'])),
                 DataCell(Text(invoice['last_name'])),
@@ -149,6 +158,7 @@ def show_detail(e):
                 DataCell(Text(invoice['invoice_date'])),
                 DataCell(Text(invoice['invoice_total'])),
                 DataCell(Text(invoice['invoice_due_date'])),
+
             ],
         ),
 	)
@@ -156,6 +166,7 @@ def show_detail(e):
 	page.go('/page_invoice_details')
  
 def calldb():
+
 	# create_table()
 	# c = conn.cursor()
 	# c.execute("SELECT * FROM invoice")
@@ -183,16 +194,19 @@ def calldb():
                         DataCell(Text(invoice['invoice_outstanding_balance'])),
                         DataCell(IconButton(icon="REQUEST_PAGE",icon_color="blue",
                         		data=invoice['invoice_id'],
+
                         		on_click=show_detail
                         		),
         				),
                         DataCell(Row([
                         	IconButton(icon="EDIT",icon_color="blue",
+
                         		data=invoice,
                         		on_click=showedit
                         		),
                         	IconButton(icon="delete",icon_color="red",
                         		data=invoice['invoice_id'],
+
                         	on_click=showdelete
                         		),
                         	])),

@@ -2,6 +2,7 @@ import flet as ft
 from flet_route import Params, Basket
 import sqlite3
 from flet import *
+
 from views.app_bar import AppBar
 from DBEngineWrapper import DBEngineWrapper
 engine = DBEngineWrapper()
@@ -25,12 +26,15 @@ def page_auth(page: ft.Page, params: Params, basket: Basket):
             page.snack_bar = ft.SnackBar(ft.Text('No connection to database...'))
             page.snack_bar.open = True
             page.update()
+
         else:
             page.snack_bar = ft.SnackBar(ft.Text('Wrong login or password!'))
             page.snack_bar.open = True
             page.update()
+
         # db.commit()
         # db.close()
+
 
     def validate(e):
         if all([user_login.value, user_pass.value]):   

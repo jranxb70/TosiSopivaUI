@@ -24,6 +24,7 @@ tb = DataTable(
 def showdelete(e):
 	try:
 		myid = int(e.control.data)
+
 		engine.deleteCustomer(myid)
 		tb.rows.clear()	
 		calldb()
@@ -32,6 +33,7 @@ def showdelete(e):
 		page.snack_bar = ft.SnackBar(ft.Text('Deleted!'))
 		page.snack_bar.open = True
 		page.update()
+
 
 	except Exception as e:
 		print(e)

@@ -25,18 +25,22 @@ class DBEngineWrapper():
         if ctypes.sizeof(ctypes.c_void_p) == 4:
             DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
+
             DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
             # DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
+
 
     @staticmethod
     def get_dll():
         return DBEngineWrapper._class_lib
+
     
+
     def getCustomer(self, customer_id):
         
         getCustomerCharOut = DBEngineWrapper.get_dll().getCustomerCharOut
-        release = DBEngineWrapper.get_dll().free_json_data      
-        getCustomerCharOut.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
+        free_json_data = DBEngineWrapper.get_dll().free_json_data      
+        getCustomerCharOut.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]     
         getCustomerCharOut.restype = ctypes.c_int
 
         # Create a pointer to a char buffer
@@ -48,9 +52,11 @@ class DBEngineWrapper():
         cont = json_data_ptr.value
         detected_encoding = chardet.detect(cont)['encoding']
         customer_data = json.loads(json_data_ptr.value.decode(detected_encoding))
+
         release.argtypes = [ctypes.c_int]
         release.restype = ctypes.c_int
         tuppu = release(2)
+
                                
         return customer_data
     
@@ -154,10 +160,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict        
@@ -189,10 +194,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict       
@@ -221,6 +225,7 @@ class DBEngineWrapper():
         updateCustomerFunc.argtypes = [ctypes.c_int, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p]
         updateCustomerFunc.restype = None
 
+
         customer_firstName = customer_firstName.encode("utf-8")
         customer_lastName = customer_lastName.encode("utf-8")
         customer_address = customer_address.encode("utf-8")
@@ -228,6 +233,7 @@ class DBEngineWrapper():
         customer_city = customer_city.encode("utf-8")
         customer_phone = customer_phone.encode("utf-8")
         customer_email = customer_email.encode("utf-8")
+
 
         updateCustomerFunc(customer_id, customer_firstName, customer_lastName, customer_address, customer_zip, customer_city, customer_phone, customer_email)
         
@@ -238,6 +244,7 @@ class DBEngineWrapper():
 
         deleteCustomerFunc(customer_id)
         
+
     def addNewInvoice(self, **kwargs):
 
         # Define the required keys
@@ -320,10 +327,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict        

@@ -15,9 +15,11 @@ from views.page_var_options import page_var_options
 from views.page_product_item import page_product_item
 from views.page_invoice_line import page_invoice_line
 from views.cabinet import page_cabinet
+
 from views.page_data import data
 
 def main(page: ft.Page):
+
 
     app_routes = [
         
@@ -35,6 +37,7 @@ def main(page: ft.Page):
         path(url="/page_var_options",clear= True, view=page_var_options),
         path(url="/page_product_item",clear= True, view=page_product_item),
         path(url="/page_invoice_line",clear= True, view=page_invoice_line),
+
         path(url="/page_data",clear= True, view=data),
     ]
     
@@ -47,6 +50,7 @@ if __name__ == '__main__':
 # ft.app(target=main, view=ft.AppView.WEB_BROWSER) 
 # import tkinter as tk
 # from tkinter import ttk, messagebox, filedialog
+
 
 # from DBEngineWrapper import DBEngineWrapper
 # from BankReferenceCalc import BankReferenceCalc
@@ -128,7 +132,9 @@ if __name__ == '__main__':
 
 #         customers = self.query_customers()  
         
+
 #         customer_id = self.add_customer("Pasi", "Männistö", "Pajuluomantie 4", "60100", "Seinäjoki")
+
 
 #         customer_data = self.query_customer(customer_id)
 
@@ -149,6 +155,7 @@ if __name__ == '__main__':
 #             doc = Document(self.notebook, application=self)
 #             self.notebook.add(doc, text=f"Document {i+1}")
                
+
 #     def query_customer(self, customer_id):
 #         engine = self.engine        
 #         customer_data = engine.getCustomer(customer_id)
@@ -173,6 +180,7 @@ if __name__ == '__main__':
 #         dt = datetime.strptime(time_stamp, "%Y-%m-%d %H:%M:%S.%f")
 #         #mic = dt.microsecond
 #         #dt = dt.replace(microsecond=0)
+
              
 #         # Format the timestamp with 7 digits of fractional seconds
 #         modified_timestamp = dt.strftime("%Y-%m-%d %H:%M:%S.%f")
@@ -194,6 +202,7 @@ if __name__ == '__main__':
 #         # Format the timestamp including milliseconds
 #         formatted_timestamp = self.modify_timestamp2(now)
         
+
 #         print(f"Modified timestamp: {formatted_timestamp}")        
 
 #         product_name = "product_name"
@@ -207,10 +216,12 @@ if __name__ == '__main__':
 #         invoice_subtotal = product_quantity * product_price
 #         invoice_total = invoice_subtotal * invoice_tax_percent
 #         invoice_tax = invoice_total - invoice_subtotal
+
         
 #         bankreference = 1000
 #         bankreference = bankreference + customer_id   
         
+
 #         bank_reference = f"{BankReferenceCalc.calc_new_reference(bankreference)}"
 #         invoice_lines = []
 
@@ -228,3 +239,4 @@ if __name__ == '__main__':
 # if __name__ == "__main__":
 #     app = Application()
 #     app.mainloop()
+
