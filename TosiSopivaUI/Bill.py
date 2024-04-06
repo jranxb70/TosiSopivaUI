@@ -109,8 +109,6 @@ class PDFPSReporte:
             psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_RIGHT, justifyLastLine=1)
             due_date = f"Due date: {global_bill['invoice_due_date']}"
             bank_reference = f"Bank reference: {global_bill['invoice_bank_reference']}"
-            due_date = f"Due date: {global_bill['invoice_due_date']}"
-            due_date = f"Due date: {global_bill['invoice_due_date']}"
             
             paragraphReportSummary = Paragraph(due_date, psDetalle)
             self.elements.append(paragraphReportSummary)
