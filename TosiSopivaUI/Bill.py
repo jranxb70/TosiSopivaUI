@@ -6,6 +6,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.pagesizes import LETTER
 from reportlab.graphics.shapes import Line, Drawing
 from reportlab.lib.colors import Color
+from util.snack_bar import show_snack_bar
 
 
 global_bill = []
@@ -21,11 +22,8 @@ def get_customer():
     global_customer = engine.getCustomer(global_bill['customer_id'])
     
 def generate_bill(e):
-    page = e.page
-    page.snack_bar = ft.SnackBar(ft.Text('Successful download!'))
-    page.snack_bar.open = True
     generate_bill_pdf(f"{global_bill['invoice_bank_reference']}__{global_bill['invoice_due_date']}.pdf")
-    page.update()
+    show_snack_bar(e.page, 'Successful download!')
     
 def generate_bill_pdf(filename):
     PDFPSReporte(filename)

@@ -1,7 +1,6 @@
 import flet as ft
 from flet import *
-import sqlite3
-conn = sqlite3.connect('invoice.db',check_same_thread=False)
+from util.snack_bar import show_snack_bar
 
 from DBEngineWrapper import DBEngineWrapper
 engine = DBEngineWrapper()
@@ -28,11 +27,7 @@ def showdelete(e):
 		tb.rows.clear()	
 		calldb()
 		tb.update()
-		page = e.page
-		page.snack_bar = ft.SnackBar(ft.Text('Deleted!'))
-		page.snack_bar.open = True
-		page.update()
-
+		show_snack_bar(e.page, 'Deleted!')
 	except Exception as e:
 		print(e)
 
@@ -61,12 +56,12 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value	
 		engine.updateCustomer(myid, firstname_edit.value, lastname_edit.value, address_edit.value, zip_edit.value, city_edit.value, phone_edit.value, email_edit.value)
-
 		tb.rows.clear()	
 		calldb()
 		dlg.visible = False
 		dlg.update()
 		tb.update()
+		show_snack_bar(e.page, 'Updated!')
 	except Exception as e:
 		print(e)
 
