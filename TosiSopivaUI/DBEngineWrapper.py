@@ -25,7 +25,8 @@ class DBEngineWrapper():
         if ctypes.sizeof(ctypes.c_void_p) == 4:
             DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
-            DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            DBEngineWrapper._class_lib = ctypes.CDLL('C:\\Project\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            # DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
             # DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
 
     @staticmethod
