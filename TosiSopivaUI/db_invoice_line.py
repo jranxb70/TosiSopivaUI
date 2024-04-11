@@ -2,7 +2,6 @@ from flet import *
 import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
-
 from DBEngineWrapper import DBEngineWrapper
 engine = DBEngineWrapper()
 
@@ -15,7 +14,6 @@ def db_get_id(id):
 tb = DataTable(
 	columns=[
 		DataColumn(Text("ID")),
-
 		DataColumn(Text("Product id")),
 		DataColumn(Text("Quantity")),
 		DataColumn(Text("Price")),
@@ -39,9 +37,7 @@ def showdelete(e):
 		print(e)
 
 id_edit = Text()
-
 # invoice_id_edit = TextField(label="invoice id")
-
 product_id_edit = TextField(label="product id")
 quantity_edit = TextField(label="quantity")
 price_edit = TextField(label="price")
@@ -55,9 +51,7 @@ def updateandsave(e):
 	try:
 		myid = id_edit.value
 		c = conn.cursor()
-
 		c.execute("UPDATE invoice_line SET product_id=?, quantity=?, price=?, product_description=?  WHERE id=?", (product_id_edit.value,quantity_edit.value,price_edit.value,product_description_edit.value,  myid))
-
 		conn.commit()
 		tb.rows.clear()	
 		calldb()
@@ -74,9 +68,7 @@ dlg = Container(
 				Text("Edit Form",size=30,weight="bold"),
 				IconButton(icon="close",on_click=hidedlg),
 					],alignment="spaceBetween"),
-
 				# invoice_id_edit,
-
 				product_id_edit,
 				quantity_edit,
 				price_edit,
@@ -88,9 +80,7 @@ dlg = Container(
 def showedit(e):
 	data_edit = e.control.data
 	id_edit.value = data_edit['id']
-
 	# invoice_id_edit.value = data_edit['invoice_id']
-
 	product_id_edit.value = data_edit['product_id']
 	quantity_edit.value = data_edit['quantity']
 	price_edit.value = data_edit['price']
@@ -99,7 +89,6 @@ def showedit(e):
 	dlg.visible = True
 	dlg.update()
  
-
 # def create_table():
 # 	c = conn.cursor()
 # 	c.execute("""CREATE TABLE IF NOT EXISTS invoice_line(
@@ -139,7 +128,6 @@ def calldb():
 			)
 	
 # calldb()
-
 
 dlg.visible = False
 mytable = Column([

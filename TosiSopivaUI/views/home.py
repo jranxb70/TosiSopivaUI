@@ -4,9 +4,7 @@ from views.app_bar import AppBar
 
 def Home(page: Page, params: Params, basket: Basket):
     imgcontainer = Container(
-
         content = Image(src="TosiSopivaUI\\img\\bg.jpg", opacity=0.4),
-
         padding=-10,
         margin=0,
     )

@@ -9,26 +9,20 @@ def page_cabinet(page: ft.Page, params: Params, basket: Basket):
     images.controls.append(
         Container(
             ft.Image(
-
                 src="TosiSopivaUI\img\customer.jpg",
-
                 width=200,
                 height=200,
                 fit=ft.ImageFit.FIT_HEIGHT,
                 border_radius=ft.border_radius.all(10),
                 tooltip="Customers",
-
             ), 
-
             on_click=lambda _:page.go('/page_all_customers')
         )
     )
     images.controls.append(
         Container(
             ft.Image(
-
                 src="TosiSopivaUI\img\companies.jpg",
-
                 width=200,
                 height=200,
                 fit=ft.ImageFit.FIT_HEIGHT,
@@ -40,9 +34,7 @@ def page_cabinet(page: ft.Page, params: Params, basket: Basket):
     images.controls.append(
         Container(
             ft.Image(
-
                 src="TosiSopivaUI\img\invoice.png",
-
                 width=200,
                 height=200,
                 fit=ft.ImageFit.FIT_HEIGHT,
@@ -54,9 +46,7 @@ def page_cabinet(page: ft.Page, params: Params, basket: Basket):
     images.controls.append(
         Container(
             ft.Image(
-
                 src="TosiSopivaUI\img\data.jpg",
-
                 width=200,
                 height=200,
                 fit=ft.ImageFit.FIT_HEIGHT,
