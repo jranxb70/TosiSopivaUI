@@ -57,6 +57,8 @@ class DllUtility():
 				print(f"Connection string: {self.connection_string}")
 			except UnicodeDecodeError:
 				print("Error decoding connection string (invalid UTF-8 sequence)")
+		elif result == -1:
+			raise FileNotFoundError("Error occurred while getting the connection string")				
 			#else:
 			#	print("Error calling getConnectionString")	
 		

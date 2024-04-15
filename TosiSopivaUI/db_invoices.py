@@ -1,8 +1,13 @@
 from flet import *
 import sqlite3
+
+from flet_core import page
 from Bill import get_invoice
 from views.page_invoice_line import get_id
+from msgboxes.msgbox_no_connection_string import dlg_modal
 from db_invoice_line import db_get_id
+
+from DllUtility import DllUtility
 
 from DBEngineWrapper import DBEngineWrapper
 engine = DBEngineWrapper()
@@ -139,43 +144,57 @@ def show_detail(e):
 	page.go('/page_invoice_details')
  
 def calldb():
-	invoices = engine.queryInvoices(1, "2024-03-01 0:00:00.0000000", "2024-03-31 0:00:00.0000000", 1)
+	invoices = engine.queryInvoices(1, "2024-03-01 0:00:00.0000000", "2024-03-31 23:59:59.9999990", 1)
 	print(invoices)
-	if not invoices == "":
-		for invoice in invoices['invoices']:
-			tb.rows.append(
-				DataRow(
-                    cells=[
-                        DataCell(Text(invoice['invoice_id'])),
-                        DataCell(Text(invoice['customer_id'])),
-                        DataCell(Text(invoice['invoice_date'])),
-                        DataCell(Text(invoice['invoice_bankreference'])),
-                        DataCell(Text(invoice['invoice_subtotal'])),
-                        DataCell(Text(invoice['invoice_tax'])),
-                        DataCell(Text(invoice['invoice_total'])),
-                        DataCell(Text(invoice['invoice_due_date'])),
-                        DataCell(Text(invoice['invoice_outstanding_balance'])),
-                        DataCell(IconButton(icon="REQUEST_PAGE",icon_color="blue",
-                        		data=invoice['invoice_id'],
-                        		on_click=show_detail
-                        		),
-        				),
-                        DataCell(Row([
-                        	IconButton(icon="EDIT",icon_color="blue",
-                        		data=invoice,
-                        		on_click=showedit
-                        		),
-                        	IconButton(icon="delete",icon_color="red",
-                        		data=invoice['invoice_id'],
-                        	on_click=showdelete
-                        		),
-                        	])),
-                    ],
-                ),
+	if len(invoices) != 0:
+		if not invoices == "":
+			for invoice in invoices['invoices']:
+				tb.rows.append(
+					DataRow(
+						cells=[
+							DataCell(Text(invoice['invoice_id'])),
+							DataCell(Text(invoice['customer_id'])),
+							DataCell(Text(invoice['invoice_date'])),
+							DataCell(Text(invoice['invoice_bankreference'])),
+							DataCell(Text(invoice['invoice_subtotal'])),
+							DataCell(Text(invoice['invoice_tax'])),
+							DataCell(Text(invoice['invoice_total'])),
+							DataCell(Text(invoice['invoice_due_date'])),
+							DataCell(Text(invoice['invoice_outstanding_balance'])),
+							DataCell(IconButton(icon="REQUEST_PAGE",icon_color="blue",
+                        			data=invoice['invoice_id'],
+                        			on_click=show_detail
+                        			),
+        					),
+							DataCell(Row([
+                        		IconButton(icon="EDIT",icon_color="blue",
+                        			data=invoice,
+                        			on_click=showedit
+                        			),
+                        		IconButton(icon="delete",icon_color="red",
+                        			data=invoice['invoice_id'],
+                        		on_click=showdelete
+                        			),
+                        		])),
+						],
+					),
 
-		)
+				)
 
-calldb()
+def start():
+	utility = None
+	db_connection_failed = False
+	try:
+		utility = DllUtility()
+	except FileNotFoundError as e:
+		print(e)
+		db_connection_failed = True
+
+	if not db_connection_failed:
+		srv = utility.get_server_name()
+		db = utility.get_database_name()
+		user = utility.get_user_name()
+		calldb()
 
 dlg.visible = False
 mytable = Column([

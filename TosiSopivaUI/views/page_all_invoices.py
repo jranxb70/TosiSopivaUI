@@ -7,10 +7,13 @@ from db_invoices import mytable, tb, calldb
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
+import db_invoices
+
 def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
     
     # AND RUN SCRIPT FOR CREATE TABLE WHEN FLET FIRST RUN
 	#create_table()
+	db_invoices.start()	
 
 	page.scroll = "auto"
 

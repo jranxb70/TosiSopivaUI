@@ -4,7 +4,7 @@ from views.app_bar import AppBar
 
 def Home(page: Page, params: Params, basket: Basket):
     imgcontainer = Container(
-        content = Image(src="TosiSopivaUI\\img\\bg.jpg", opacity=0.4),
+        content = Image(src="img\\bg.jpg", opacity=0.4),
         padding=-10,
         margin=0,
     )
@@ -17,7 +17,7 @@ def Home(page: Page, params: Params, basket: Basket):
                 Row([
                     FilledButton("START",
                     style=ButtonStyle(shape=CircleBorder(),padding=30),
-                    on_click=lambda _:page.go('/page_reg'),
+                    on_click=lambda _:page.go('/page_cabinet'),#/page_reg'),
             ),
             ],alignment=MainAxisAlignment.CENTER,) 
             ]),

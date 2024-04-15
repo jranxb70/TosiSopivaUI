@@ -9,10 +9,7 @@ engine = DBEngineWrapper()
 def page_auth(page: ft.Page, params: Params, basket: Basket):
   
     def auth_user(e):
-        # db = sqlite3.connect('invoice.db')
-        # cur = db.cursor()
-        # cur.execute(f"SELECT * FROM users WHERE login = '{user_login.value}' AND pass = '{user_pass.value}'")
-        
+       
         result = engine.getDBUser(user_login.value, user_pass.value)
         print(user_login.value, user_pass.value)
         print(result)

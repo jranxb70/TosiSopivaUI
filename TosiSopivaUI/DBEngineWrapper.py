@@ -25,9 +25,9 @@ class DBEngineWrapper():
         if ctypes.sizeof(ctypes.c_void_p) == 4:
             DBEngineWrapper._class_lib = ctypes.CDLL('./engine.so')  # Linux
         else:
-            DBEngineWrapper._class_lib = ctypes.CDLL('C:\\Project\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
+            #DBEngineWrapper._class_lib = ctypes.CDLL('C:\\Project\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
             # DBEngineWrapper._class_lib = ctypes.CDLL('..\\..\\TosiSopivaLaskutus\\out\\build\\x64-Debug\\bin\\engine.dll')  # Windows
-            # DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
+            DBEngineWrapper._class_lib = ctypes.CDLL('.\\engine.dll')  # Windows            
 
     @staticmethod
     def get_dll():
@@ -123,8 +123,9 @@ class DBEngineWrapper():
     # Free resources
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data(1)
+        #free_json_data.argtypes = [ctypes.c_int]
+        free_json_data.restype = ctypes.c_int
+        free_json_data()
         free_sql_error_details()
     
         return json_dict
@@ -155,10 +156,10 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        #free_json_data.argtypes = [ctypes.c_int]
+        free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict        
@@ -175,8 +176,16 @@ class DBEngineWrapper():
             pass        
 
         cont = json_data_ptr.value
+        po = chardet.detect(cont).get("encoding")
+        # customer_records = cont.split(b'}, {')
+        # for record in customer_records:
+        #     # Process each customer record (still in bytes format)
+        #     print(record)      
+        detected_encoding = chardet.detect(cont)  
         detected_encoding = chardet.detect(cont)['encoding']
-        # print(f"Detected encoding: {detected_encoding}")        
+        # print(f"Detected encoding: {detected_encoding}")
+        # 
+
         try:
             # 'ISO-8859-1' or 'utf-8'           
             json_dict = json.loads(json_data_ptr.value.decode(detected_encoding))
@@ -190,10 +199,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict       
@@ -321,10 +329,9 @@ class DBEngineWrapper():
         free_json_data = DBEngineWrapper.get_dll().free_json_data
         free_sql_error_details = DBEngineWrapper.get_dll().free_sql_error_details
          
-        free_json_data.argtypes = [ctypes.c_int]
-        free_json_data = ctypes.c_int
+        free_json_data.restype = ctypes.c_int
         
-        code = free_json_data(1)
+        code = free_json_data()
         
         free_sql_error_details()   
         return json_dict        
@@ -358,9 +365,10 @@ class DBEngineWrapper():
 
         json_string = jsonStringCompany.contents.value.decode()
 
-        free_json_string = ctypes.CDLL("libc.so.6").free
-        free_json_string.argtypes = [ctypes.c_void_p]
-        free_json_string(jsonStringCompany)
+        free_json_data = DBEngineWrapper.get_dll().free_json_data
+        #free_json_data.argtypes = [ctypes.c_void_p]
+        free_json_data.restype = ctypes.c_int
+        free_json_data()
 
         return json_string
         

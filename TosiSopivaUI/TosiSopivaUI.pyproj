@@ -36,12 +36,6 @@
     <Compile Include="db_variations.py" />
     <Compile Include="db_var_options.py" />
     <Compile Include="DllUtility.py" />
-    <Compile Include="home.py" />
-    <Compile Include="page_all_clients.py" />
-    <Compile Include="page_all_products.py" />
-    <Compile Include="page_auth.py" />
-    <Compile Include="page_reg.py" />
-    <Compile Include="temp_nav.py" />
     <Compile Include="TosiSopivaUI.py" />
     <Compile Include="views\app_bar.py" />
     <Compile Include="views\cabinet.py" />
@@ -61,10 +55,12 @@
     <Compile Include="views\__init__.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="msgboxes\" />
     <Folder Include="views\" />
     <Folder Include="views\__pycache__\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="msgboxes\msgbox_no_connection_string.py" />
     <Content Include="views\__pycache__\home.cpython-312.pyc" />
     <Content Include="views\__pycache__\page_all_clients.cpython-312.pyc" />
     <Content Include="views\__pycache__\page_all_products.cpython-312.pyc" />
@@ -74,6 +70,15 @@
     <Content Include="views\__pycache__\__init__.cpython-312.pyc" />
   </ItemGroup>
   <ItemGroup>
+    <Interpreter Include="env1\">
+      <Id>env1</Id>
+      <Version>3.9</Version>
+      <Description>env1 (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
     <Interpreter Include="env\">
       <Id>env</Id>
       <Version>3.9</Version>
