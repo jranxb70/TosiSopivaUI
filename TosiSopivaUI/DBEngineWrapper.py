@@ -179,7 +179,7 @@ class DBEngineWrapper():
         po = chardet.detect(cont).get("encoding")
         # customer_records = cont.split(b'}, {')
         # for record in customer_records:
-        #     # Process each customer record (still in bytes format)
+        #     Process each customer record (still in bytes format)
         #     print(record)      
         detected_encoding = chardet.detect(cont)  
         detected_encoding = chardet.detect(cont)['encoding']
