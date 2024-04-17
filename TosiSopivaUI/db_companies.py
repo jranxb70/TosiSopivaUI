@@ -1,6 +1,6 @@
 from flet import *
-import sqlite3
-conn = sqlite3.connect('invoice.db',check_same_thread=False)
+from DBEngineWrapper import DBEngineWrapper
+from DllUtility import DllUtility
 
 tb = DataTable(
 	columns=[
@@ -85,64 +85,62 @@ dlg = Container(
 
 def showedit(e):
 	data_edit = e.control.data
-	id_edit.value = data_edit['id']
-	name_edit.value = data_edit['name']
-	address_edit.value = data_edit['address']
-	zip_edit.value = data_edit['zip']
-	city_edit.value = data_edit['city']
-	phone_edit.value = data_edit['phone']
-	business_id_edit.value = data_edit['business_id']
+	id_edit.value = data_edit['company_id']
+	name_edit.value = data_edit['company_name']
+	address_edit.value = data_edit['company_address']
+	zip_edit.value = data_edit['company_zip']
+	city_edit.value = data_edit['company_city']
+	phone_edit.value = data_edit['company_phone']
+	business_id_edit.value = data_edit['company_business_id']
 
 	dlg.visible = True
 	dlg.update()
  
-def create_table():
-	c = conn.cursor()
-	c.execute("""CREATE TABLE IF NOT EXISTS company(
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT,
-		address TEXT,
-		zip INTEGER,
-		city TEXT,
-		phone TEXT,
-        business_id INTEGER)
-		""")
-	conn.commit()
-
 def calldb():
-	create_table()
-	c = conn.cursor()
-	c.execute("SELECT * FROM company")
-	companies = c.fetchall()
-	if not companies == "":
-		keys = ['id', 'name', 'address', 'zip', 'city', 'phone', 'business_id']
-		result = [dict(zip(keys, values)) for values in companies]
-		for x in result:
-			tb.rows.append(
-				DataRow(
-                    cells=[
-                        DataCell(Text(x['name'])),
-                        DataCell(Text(x['address'])),
-                        DataCell(Text(x['zip'])),
-                        DataCell(Text(x['city'])),
-                        DataCell(Text(x['phone'])),
-                        DataCell(Text(x['business_id'])),
-                        DataCell(Row([
-                        	IconButton(icon="EDIT",icon_color="blue",
-                        		data=x,
-                        		on_click=showedit
-                        	),
-                        	IconButton(icon="delete",icon_color="red",
-                        		data=x['id'],
-                        	on_click=showdelete
-                        	),
-                        ])),
-                    ],
-                ),
+	db_engine = DBEngineWrapper()
+	company = db_engine.get_company(1)
+
+	if not len(company) == 0:
+		result = dict(company)
+
+		tb.rows.append(
+			DataRow(
+                cells=[
+                    DataCell(Text(result['company_name'])),
+                    DataCell(Text(result['company_address'])),
+                    DataCell(Text(result['company_zip'])),
+                    DataCell(Text(result['company_city'])),
+                    DataCell(Text(result['company_phone'])),
+                    DataCell(Text(result['company_business_id'])),
+                    DataCell(Row([
+                        IconButton(icon="EDIT",icon_color="blue",
+                        	data=result,
+                        	on_click=showedit
+                        ),
+                        IconButton(icon="delete",icon_color="red",
+                        	data=result['company_id'],
+                        on_click=showdelete
+                        ),
+                    ])),
+                ],
+            ),
 
 		)
 
-calldb()
+def start():
+	utility = None
+	db_connection_failed = False
+	try:
+		utility = DllUtility()
+	except FileNotFoundError as e:
+		print(e)
+		db_connection_failed = True
+
+	if not db_connection_failed:
+		srv = utility.get_server_name()
+		db = utility.get_database_name()
+		user = utility.get_user_name()
+		calldb()
 
 dlg.visible = False
 mytable = Column([

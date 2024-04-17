@@ -368,3 +368,6 @@ FodyWeavers.xsd
 
 invoice.db
 
+/TosiSopivaUI/engine.dll
+/TosiSopivaUI/env
+/TosiSopivaUI/env1

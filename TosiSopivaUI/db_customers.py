@@ -3,6 +3,7 @@ from flet import *
 from util.snack_bar import show_snack_bar
 
 from DBEngineWrapper import DBEngineWrapper
+from DllUtility import DllUtility
 engine = DBEngineWrapper()
 
 tb = DataTable(
@@ -43,7 +44,7 @@ zip_edit = TextField(label="zip",input_filter=ft.InputFilter(
 city_edit = TextField(label="city")
 phone_edit = TextField(label="phone", input_filter=ft.InputFilter(
             allow=True,
-            regex_string=r"[0-9+]",
+            regex_string=r"[0-9+\-]",
             replacement_string="",
         ))
 email_edit = TextField(label="email")
@@ -98,8 +99,8 @@ def showedit(e):
 
 def calldb():
 	clients = engine.queryCustomers()
-	if not clients == "":
-
+	if not clients == "":	
+		tb.rows.clear()
 		for customer in clients['customers']:
 			tb.rows.append(
 				DataRow(cells=[        
@@ -125,7 +126,20 @@ def calldb():
                 ),
 		)
 
-calldb()
+def start():
+	utility = None
+	db_connection_failed = False
+	try:
+		utility = DllUtility()
+	except FileNotFoundError as e:
+		print(e)
+		db_connection_failed = True
+
+	if not db_connection_failed:
+		srv = utility.get_server_name()
+		db = utility.get_database_name()
+		user = utility.get_user_name()
+		calldb()
 
 dlg.visible = False
 mytable = Column([

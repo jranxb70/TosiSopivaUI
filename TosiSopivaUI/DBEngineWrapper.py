@@ -360,13 +360,13 @@ class DBEngineWrapper():
         getCompany.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_char_p)]
         getCompany.restype = None
 
-        jsonStringCompany = ctypes.POINTER(ctypes.c_char)()
-        getCompany(company_id, ctypes.byref(jsonStringCompany))
+        jsonStringCompany = ctypes.c_char_p()
 
-        json_string = jsonStringCompany.contents.value.decode()
+        getCompany(company_id, ctypes.byref(jsonStringCompany))
+        detected_encoding = chardet.detect(jsonStringCompany.value)['encoding']
+        json_string = json.loads(jsonStringCompany.value.decode(detected_encoding))
 
         free_json_data = DBEngineWrapper.get_dll().free_json_data
-        #free_json_data.argtypes = [ctypes.c_void_p]
         free_json_data.restype = ctypes.c_int
         free_json_data()
 

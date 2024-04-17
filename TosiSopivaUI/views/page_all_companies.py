@@ -3,11 +3,13 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-from db_companies import mytable, tb, calldb
+from db_companies import mytable, tb, calldb, start
 import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
 def page_all_companies(page: ft.Page, params: Params, basket: Basket):
+
+	start()	
 
 	page.scroll = "auto"
 

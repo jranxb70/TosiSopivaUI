@@ -148,6 +148,9 @@ def calldb():
 	print(invoices)
 	if len(invoices) != 0:
 		if not invoices == "":
+			count = len(tb.rows)		
+			tb.rows.clear()
+			count = len(tb.rows)						
 			for invoice in invoices['invoices']:
 				tb.rows.append(
 					DataRow(

@@ -3,12 +3,14 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
-from db_customers import mytable, tb, calldb
+from db_customers import mytable, tb, calldb, start
 
 from DBEngineWrapper import DBEngineWrapper
 engine = DBEngineWrapper()
 
 def page_all_customers(page: ft.Page, params: Params, basket: Basket):
+
+	start()	
 
 	page.scroll = "auto"
 
