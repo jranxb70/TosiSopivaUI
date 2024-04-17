@@ -8,11 +8,8 @@ from msgboxes.msgbox_no_connection_string import dlg_modal
 from db_invoice_line import db_get_id
 
 from DllUtility import DllUtility
-
 from DBEngineWrapper import DBEngineWrapper
-engine = DBEngineWrapper()
 
-conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
@@ -119,6 +116,7 @@ bill = DataTable(
 	)
 
 def show_detail(e):
+	engine = DBEngineWrapper()	
 	page = e.page
 	my_id = int(e.control.data)
 	get_id(my_id)
@@ -143,7 +141,12 @@ def show_detail(e):
 	conn.commit()
 	page.go('/page_invoice_details')
  
+def add_invoice(customer_id, invoice_date, invoice_subtotal, invoice_total, invoice_tax, bank_reference, invoice_due_date, invoice_lines):
+	engine = DBEngineWrapper()
+	engine.addNewInvoice(customer_id=customer_id, invoice_date=invoice_date, invoice_subtotal=invoice_subtotal, invoice_total=invoice_total, invoice_tax=invoice_tax, bank_reference=bank_reference, invoice_due_date=invoice_due_date,invoice_lines=invoice_lines)			
+ 
 def calldb():
+	engine = DBEngineWrapper()	
 	invoices = engine.queryInvoices(1, "2024-03-01 0:00:00.0000000", "2024-03-31 23:59:59.9999990", 1)
 	print(invoices)
 	if len(invoices) != 0:

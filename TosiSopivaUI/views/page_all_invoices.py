@@ -3,17 +3,16 @@ from flet import *
 from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
-from db_invoices import mytable, tb, calldb
-import sqlite3
-conn = sqlite3.connect("invoice.db",check_same_thread=False)
+from db_invoices import mytable, tb, calldb, start, add_invoice
+#import sqlite3
+#conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
-import db_invoices
 
 def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
     
     # AND RUN SCRIPT FOR CREATE TABLE WHEN FLET FIRST RUN
 	#create_table()
-	db_invoices.start()	
+	start()	
 
 	page.scroll = "auto"
 
@@ -28,10 +27,15 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 	def savedata(e):
 		try:
 			# INPUT TO DATABASE
-			c = conn.cursor()
-			c.execute("INSERT INTO invoice (customer_id, invoice_date, invoice_bankreference, invoice_subtotal, invoice_tax, invoice_total, invoice_due_date) VALUES(?,?,?,?,?,?,?)",
-             (customer_id.value, date.value, bank_reference.value, subtotal.value, tax.value, total.value, due_date.value))
-			conn.commit()
+			# c = conn.cursor()
+			# c.execute("INSERT INTO invoice (customer_id, invoice_date, invoice_bankreference, invoice_subtotal, invoice_tax, invoice_total, invoice_due_date) VALUES(?,?,?,?,?,?,?)",
+   #           (customer_id.value, date.value, bank_reference.value, subtotal.value, tax.value, total.value, due_date.value))
+			# conn.commit()
+			invoice_lines = [{"product_item_id": 1, "quantity":10, "price":8, "product_description": "turha tuote"}]
+			try:			
+				add_invoice(int(customer_id.value), date.value, float(subtotal.value), float(total.value), float(tax.value), bank_reference.value, due_date.value, invoice_lines)
+			except ValueError as e:
+				print(e)							
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS
 			inputcon.offset = transform.Offset(2,0)
