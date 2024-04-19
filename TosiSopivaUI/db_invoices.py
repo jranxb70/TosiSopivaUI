@@ -1,5 +1,5 @@
 from flet import *
-import sqlite3
+#import sqlite3
 
 from flet_core import page
 from Bill import get_invoice
@@ -10,6 +10,8 @@ from db_invoice_line import db_get_id
 from DllUtility import DllUtility
 from DBEngineWrapper import DBEngineWrapper
 
+
+#conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 tb = DataTable(
 	columns=[
@@ -31,9 +33,9 @@ tb = DataTable(
 def showdelete(e):
 	try:
 		myid = int(e.control.data)
-		c = conn.cursor()
-		c.execute("DELETE FROM invoice WHERE id=?", (myid,))
-		conn.commit()
+		#c = conn.cursor()
+		#c.execute("DELETE FROM invoice WHERE id=?", (myid,))
+		#conn.commit()
 		tb.rows.clear()	
 		calldb()
 		tb.update()
@@ -57,10 +59,10 @@ def hidedlg(e):
 def updateandsave(e):
 	try:
 		myid = id_edit.value
-		c = conn.cursor()
-		c.execute("UPDATE invoice SET customer_id=?, invoice_date=?, invoice_bankreference=?, invoice_subtotal=?, invoice_tax=?, invoice_total=?, invoice_due_date=? WHERE id=?",
-            (customer_id.value, date.value, bank_reference.value, subtotal.value, tax.value, total.value, due_date.value,  myid))
-		conn.commit()
+		#c = conn.cursor()
+		#c.execute("UPDATE invoice SET customer_id=?, invoice_date=?, invoice_bankreference=?, invoice_subtotal=?, invoice_tax=?, invoice_total=?, invoice_due_date=? WHERE id=?",
+        #    (customer_id.value, date.value, bank_reference.value, subtotal.value, tax.value, total.value, due_date.value,  myid))
+		#conn.commit()
 		tb.rows.clear()	
 		calldb()
 		dlg.visible = False
@@ -138,7 +140,7 @@ def show_detail(e):
             ],
         ),
 	)
-	conn.commit()
+	#conn.commit()
 	page.go('/page_invoice_details')
  
 def add_invoice(customer_id, invoice_date, invoice_subtotal, invoice_total, invoice_tax, bank_reference, invoice_due_date, invoice_lines):

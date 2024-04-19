@@ -8,7 +8,7 @@ import sqlite3
 conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
 from DBEngineWrapper import DBEngineWrapper
-engine = DBEngineWrapper()
+
 
 global_invoice_id = None
 
@@ -34,6 +34,7 @@ def page_invoice_line(page: ft.Page, params: Params, basket: Basket):
 			# c = conn.cursor()
 			# c.execute("INSERT INTO invoice_line (invoice_id,product_id,quantity,price,product_description) VALUES(?,?,?,?,?)",(invoice_id.value,product_id.value,quantity.value,price.value,product_description.value))
 			# conn.commit()
+			engine = DBEngineWrapper()			
 			invoice = engine.addInvoiceLine(True, global_invoice_id, product_id.value, quantity.value, price.value, product_description.value)
 			# invoice = engine.addInvoiceLine(True, 10 , 3, 5, 10.20, "blablabla")
 			print(invoice)

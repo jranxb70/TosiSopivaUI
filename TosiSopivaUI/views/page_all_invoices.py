@@ -4,6 +4,7 @@ from flet_route import Params, Basket
 from views.app_bar import AppBar
 # IMPORT YOU CREATE TABLE 
 from db_invoices import mytable, tb, calldb, start, add_invoice
+from views.page_invoice_line import page_invoice_line
 #import sqlite3
 #conn = sqlite3.connect("invoice.db",check_same_thread=False)
 
@@ -64,6 +65,9 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 		except Exception as e:
 			print(e)
 
+    # keeps track of the number of tiles already added
+	page.count = 0			
+
 	# CREATE FIELD FOR INPUT
 	customer_id = TextField(label="customer id")
 	date = TextField(label="invoice date")
@@ -73,8 +77,51 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 	total = TextField(label="invoice total")
 	due_date = TextField(label="due date")
 
+	ff = ft.ListTile(title=ft.Text(f"Tile {page.count}"))
+
+	tolppa = 0
+
+	
+	lines = ft.Container(
+				content=ft.Column(
+					[
+						ft.ListTile(
+							leading=ft.Icon(ft.icons.ALBUM),
+							title=ft.Text("The Enchanted Nightingale"),
+							subtitle=ft.Text(
+								f"Music by Julie Gayboy {page.count}. Lyrics by Sidney Stein."
+							),
+						),
+						ft.Row(
+							[ft.TextButton("Buy tickets"), ft.TextButton("Listen")],
+							alignment=ft.MainAxisAlignment.END,
+						),
+					]
+				),
+				width=400,
+				padding=10,
+			)
+
+	def fab_pressed(e):
+		lines.page.add(ff)#ft.ListTile(title=ft.Text(f"Tile {page.count}")))
+		#invoice_line = page_invoice_line(page, params, basket)#page: ft.Page, params: Params, basket: Basket)
+		#page.add(invoice_line)	
+		e.page.show_snack_bar(
+            ft.SnackBar(ft.Text(f"Tile was added successfully! {e.page.count}"), open=True)
+        )
+		e.page.count += 1
+		#tolppa += 1
+
+
+	page.add(ft.Text("Press the FAB to add a tile!"))
+
+	floating_action_button = ft.FloatingActionButton(
+		icon=ft.icons.ADD, on_click=fab_pressed, bgcolor=ft.colors.LIME_300
+)
+
 
 	# CREATE MODAL INPUT FOR ADD NEW DATA 
+	# new invoice	
 	inputcon = Card(
 		# ADD SLIDE LEFT EFFECT
 		offset = transform.Offset(2,0),
@@ -95,12 +142,41 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
                 tax,
                 total,
                 due_date,
+				floating_action_button,
+				lines,							
 				FilledButton("Save",
 				on_click=savedata
 					)
 			])
 		)
 	)
+
+
+	card = ft.Card(
+			content=ft.Container(
+				content=ft.Column(
+					[
+						ft.ListTile(
+							leading=ft.Icon(ft.icons.ALBUM),
+							title=ft.Text("The Enchanted Nightingale"),
+							subtitle=ft.Text(
+								"Music by Julie Gable. Lyrics by Sidney Stein."
+							),
+						),
+						ft.Row(
+							[ft.TextButton("Buy tickets"), ft.TextButton("Listen")],
+							alignment=ft.MainAxisAlignment.END,
+						),
+					]
+				),
+				width=400,
+				padding=10,
+			)
+		)
+	#page.add(card)
+
+
+
 
 	return ft.View(
     	"/page_all_invoices",
@@ -113,7 +189,7 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
-		inputcon 
+		inputcon, card, lines
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,
