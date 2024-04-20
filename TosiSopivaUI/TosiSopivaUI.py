@@ -41,6 +41,6 @@ def main(page: ft.Page):
     Routing(page=page, app_routes=app_routes)
     
     page.go(page.route)
-    
+
 if __name__ == '__main__':
     ft.app(target=main)

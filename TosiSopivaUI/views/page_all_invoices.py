@@ -103,7 +103,13 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
 			)
 
 	def fab_pressed(e):
-		lines.page.add(ff)#ft.ListTile(title=ft.Text(f"Tile {page.count}")))
+		content = lines.content
+		controls = content.controls
+		controls.append(ft.Text(f"Tile was added unsuccessfully! {e.page.count}"))		
+		lines.update()				
+		for fuch in controls:
+			pass#fuch.off()		
+		#lines.content(ft.Text(f"Tile was added successfully! {e.page.count}"))#ft.ListTile(title=ft.Text(f"Tile {page.count}")))
 		#invoice_line = page_invoice_line(page, params, basket)#page: ft.Page, params: Params, basket: Basket)
 		#page.add(invoice_line)	
 		e.page.show_snack_bar(
@@ -189,7 +195,7 @@ def page_all_invoices(page: ft.Page, params: Params, basket: Basket):
    			ElevatedButton(text='Go to Back', on_click=lambda _:page.go('/page_cabinet')),
 		mytable,
 		# AND DIALOG FOR ADD DATA
-		inputcon, card, lines
+		inputcon, card
         ],
         vertical_alignment=MainAxisAlignment.CENTER,
         horizontal_alignment=CrossAxisAlignment.CENTER,
